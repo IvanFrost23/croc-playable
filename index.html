@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playable Crossword Ad</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+        }
+
+        #game-container {
+            position: relative;
+            width: 600px;
+            height: 1000px;
+            background: url('background.png') no-repeat center center;
+            background-size: cover;
+        }
+
+        #coin {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            background: #FFD700;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .grid {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px 40px;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .cell.green {
+                background-image: url('green_letter.png');
+            }
+
+            .cell.empty {
+                background-image: url('empty_letter.png');
+            }
+
+        .letters {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .letter {
+            width: 70px;
+            height: 70px;
+            background: url('keypad.png') no-repeat center center;
+            background-size: cover;
+            font-size: 30px;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="coin">305</div>
+        <div class="grid" id="grid">
+            <!-- Grid cells will be dynamically populated -->
+        </div>
+        <div class="letters" id="letters">
+            <!-- Letters will be dynamically populated -->
+        </div>
+    </div>
+
+    <script>
+        const gridData = [
+            ['M', '', '', '', ''],
+            ['A', '', '', '', ''],
+            ['R', '', '', '', ''],
+            ['T', '', '', '', ''],
+            ['E', '', '', '', ''],
+            ['N', '', '', '', ''],
+            ['S', '', '', '', ''],
+            ['T', '', '', '', ''],
+            ['A', '', '', '', ''],
+            ['R', '', '', '', ''],
+            ['T', '', '', '', ''],
+            ['E', '', '', '', ''],
+            ['N', '', '', '', ''],
+            ['S', '', '', '', '']
+        ];
+
+        const availableLetters = ['A', 'E', 'T', 'R', 'S', 'N'];
+
+        const grid = document.getElementById('grid');
+        const lettersContainer = document.getElementById('letters');
+
+        function initGrid() {
+            gridData.forEach((row, rowIndex) => {
+                row.forEach((cell, colIndex) => {
+                    const cellElement = document.createElement('div');
+                    cellElement.classList.add('cell');
+                    if (rowIndex % 2 === 0 && colIndex === 0) {
+                        cellElement.classList.add('green');
+                        cellElement.textContent = cell;
+                    } else {
+                        cellElement.classList.add('empty');
+                    }
+                    grid.appendChild(cellElement);
+                });
+            });
+        }
+
+        function initLetters() {
+            const angleStep = (2 * Math.PI) / availableLetters.length;
+            const radius = 100;
+            availableLetters.forEach((letter, index) => {
+                const letterElement = document.createElement('div');
+                letterElement.classList.add('letter');
+                letterElement.textContent = letter;
+                const angle = index * angleStep;
+                letterElement.style.position = 'absolute';
+                letterElement.style.left = `${150 + radius * Math.cos(angle)}px`;
+                letterElement.style.top = `${150 + radius * Math.sin(angle)}px`;
+                letterElement.addEventListener('click', () => handleLetterClick(letter));
+                lettersContainer.appendChild(letterElement);
+            });
+        }
+
+        function handleLetterClick(letter) {
+            const emptyCell = document.querySelector('.cell.empty:not([data-set="true"])');
+            if (emptyCell) {
+                emptyCell.textContent = letter;
+                emptyCell.dataset.set = "true";
+            }
+        }
+
+        initGrid();
+        initLetters();
+    </script>
+
+</body>
+</html>

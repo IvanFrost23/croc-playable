@@ -41,31 +41,32 @@
             left: 50%;
             transform: translateX(-50%);
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px 40px;
+            grid-template-columns: 1fr 1fr; /* 2 words per row */
+            grid-auto-rows: auto; /* Allow rows to adjust dynamically */
+            gap: 20px 40px; /* Spacing between words */
+        }
+
+        .word {
+            display: flex;
+            gap: 5px;
         }
 
         .cell {
-            width: 60px;
-            height: 60px;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            font-size: 24px;
-            color: #333;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border: 1px solid #ccc;
+            font-size: 18px;
             font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: #333;
+            text-align: center;
+            line-height: 40px;
         }
 
-            .cell.green {
-                background-image: url('green_letter.png');
-            }
-
-            .cell.empty {
-                background-image: url('empty_letter.png');
-            }
+        .cell.green {
+            background: #7ed957; /* Pre-filled cells */
+            color: #fff;
+        }
 
         .letters {
             position: absolute;
@@ -85,118 +86,109 @@
             background: url('keypad.png') no-repeat center center;
             background-size: cover;
             position: relative;
-            border-radius: 50%; /* Ensures the background is circular */
         }
 
         .letter {
             position: absolute;
-            width: 70px; /* Increased size */
-            height: 70px; /* Increased size */
-            font-size: 40px; /* Increased font size */
-            color: #fff; /* Keep text color consistent */
+            width: 70px;
+            height: 70px;
+            font-size: 40px;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            background: transparent; /* No individual background */
-            font-weight: bold;
-            text-shadow: 1px 1px 2px #000; /* Enhance visibility */
-            border-radius: 50%; /* Optional: adds circular letter buttons */
         }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div id="coin">305</div>
-        <div class="grid" id="grid">
-            <!-- Grid cells will be dynamically populated -->
-        </div>
-        <div class="letters" id="letters">
-            <div class="keypad">
-                <!-- Letters will be dynamically populated here -->
-            </div>
+<div id="game-container">
+    <div id="coin">305</div>
+    <div class="grid" id="grid">
+        <!-- Grid cells will be dynamically populated -->
+    </div>
+    <div class="letters" id="letters">
+        <div class="keypad">
+            <!-- Letters will be dynamically populated here -->
         </div>
     </div>
+</div>
 
-    <script>
-        const gridData = [
-            ['M', '', '', '', ''],
-            ['A', '', '', '', ''],
-            ['R', '', '', '', ''],
-            ['T', '', '', '', ''],
-            ['E', '', '', '', ''],
-            ['N', '', '', '', ''],
-            ['S', '', '', '', ''],
-            ['T', '', '', '', ''],
-            ['A', '', '', '', ''],
-            ['R', '', '', '', ''],
-            ['T', '', '', '', ''],
-            ['E', '', '', '', ''],
-            ['N', '', '', '', ''],
-            ['S', '', '', '', '']
-        ];
+<script>
+    // Grid words (2 words per row, 8 rows total)
+    const gridData = [
+        [["P", "H", "M"], ["P", "Y", "W", "A", "S"]],
+        [["K", "P"], ["A", "S", "A"]],
+        [["P", "E", "B"], ["B", "B"]],
+        [["M", "K", "E"], ["S", "T", "R"]],
+        [["S", "T"], ["A", "B"]],
+        [["A", "R"], ["K", "S"]],
+        [["E", "P"], ["A", "M"]],
+        [["A", "B"], ["A", "S", "S"]],
+    ];
 
-        const availableLetters = ['A', 'E', 'T', 'R', 'S', 'N'];
+    const availableLetters = ['A', 'B', 'H', 'K', 'M', 'P', 'S', 'T', 'W', 'Y', 'E', 'R'];
 
-        const grid = document.getElementById('grid');
-        const lettersContainer = document.getElementById('letters');
+    const grid = document.getElementById('grid');
+    const lettersContainer = document.getElementById('letters');
 
-        function initGrid() {
-            gridData.forEach((row, rowIndex) => {
-                row.forEach((cell, colIndex) => {
+    function initGrid() {
+        gridData.forEach((row) => {
+            row.forEach((word) => {
+                const wordContainer = document.createElement('div');
+                wordContainer.classList.add('word');
+
+                word.forEach((letter, index) => {
                     const cellElement = document.createElement('div');
                     cellElement.classList.add('cell');
-                    if (rowIndex % 2 === 0 && colIndex === 0) {
+                    if (index === 0) {
+                        // Pre-fill first letters of words
+                        cellElement.textContent = letter;
                         cellElement.classList.add('green');
-                        cellElement.textContent = cell;
-                    } else {
-                        cellElement.classList.add('empty');
                     }
-                    grid.appendChild(cellElement);
+                    wordContainer.appendChild(cellElement);
                 });
+
+                grid.appendChild(wordContainer);
             });
+        });
+    }
+
+    function initLetters() {
+        const angleStep = (2 * Math.PI) / availableLetters.length;
+        const radius = 120;
+        const centerOffset = 150;
+        const keypad = document.querySelector('.keypad');
+
+        availableLetters.forEach((letter, index) => {
+            const letterElement = document.createElement('div');
+            letterElement.classList.add('letter');
+            letterElement.textContent = letter;
+
+            const angle = index * angleStep;
+            const x = radius * Math.cos(angle) + centerOffset - 35;
+            const y = radius * Math.sin(angle) + centerOffset - 35;
+
+            letterElement.style.left = `${x}px`;
+            letterElement.style.top = `${y}px`;
+
+            letterElement.addEventListener('click', () => handleLetterClick(letter));
+            keypad.appendChild(letterElement);
+        });
+    }
+
+    function handleLetterClick(letter) {
+        const emptyCell = document.querySelector('.cell:not(.green):empty');
+        if (emptyCell) {
+            emptyCell.textContent = letter;
+            emptyCell.classList.add('green');
         }
+    }
 
-        function initLetters() {
-            const angleStep = (2 * Math.PI) / availableLetters.length;
-            const radius = 120; // Increased radius for spacing larger letters
-            const centerOffset = 150; // Center of the 300px circle
-            const keypad = document.querySelector('.keypad');
-
-            availableLetters.forEach((letter, index) => {
-                const letterElement = document.createElement('div');
-                letterElement.classList.add('letter');
-                letterElement.textContent = letter;
-
-                // Calculate the position on the circle
-                const angle = index * angleStep;
-                const x = radius * Math.cos(angle) + centerOffset - 35; // Adjust for larger size
-                const y = radius * Math.sin(angle) + centerOffset - 35; // Adjust for larger size
-
-                // Set position
-                letterElement.style.left = `${x}px`;
-                letterElement.style.top = `${y}px`;
-
-                // Add click functionality
-                letterElement.addEventListener('click', () => handleLetterClick(letter));
-
-                // Append to the keypad
-                keypad.appendChild(letterElement);
-            });
-        }
-
-        function handleLetterClick(letter) {
-            const emptyCell = document.querySelector('.cell.empty:not([data-set="true"])');
-            if (emptyCell) {
-                emptyCell.textContent = letter;
-                emptyCell.dataset.set = "true";
-            }
-        }
-
-        initGrid();
-        initLetters();
-    </script>
+    initGrid();
+    initLetters();
+</script>
 
 </body>
 </html>

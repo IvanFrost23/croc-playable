@@ -116,19 +116,20 @@
 </div>
 
 <script>
-    // Grid words (2 words per row, 8 rows total)
+    // Grid words (2 words per row, 8 rows total, updated for 7 unique letters)
     const gridData = [
-        [["P", "H", "M"], ["P", "Y", "W", "A", "S"]],
-        [["K", "P"], ["A", "S", "A"]],
-        [["P", "E", "B"], ["B", "B"]],
-        [["M", "K", "E"], ["S", "T", "R"]],
-        [["S", "T"], ["A", "B"]],
+        [["P", "A", "T"], ["P", "A", "S", "T", "E"]],
+        [["K", "I"], ["A", "S", "H"]],
+        [["P", "E", "N"], ["B", "A", "T"]],
+        [["M", "A", "P"], ["S", "T", "E"]],
+        [["S", "I"], ["A", "P"]],
         [["A", "R"], ["K", "S"]],
-        [["E", "P"], ["A", "M"]],
-        [["A", "B"], ["A", "S", "S"]],
+        [["E", "P"], ["A", "T"]],
+        [["A", "B"], ["A", "S", "H"]],
     ];
 
-    const availableLetters = ['A', 'B', 'H', 'K', 'M', 'P', 'S', 'T', 'W', 'Y', 'E', 'R'];
+    // Reduced to 7 unique letters
+    const availableLetters = ['A', 'B', 'E', 'I', 'K', 'P', 'S'];
 
     const grid = document.getElementById('grid');
     const lettersContainer = document.getElementById('letters');

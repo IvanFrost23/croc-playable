@@ -54,8 +54,9 @@
         .cell {
             width: 40px;
             height: 40px;
-            background: #fff;
-            border: 1px solid #ccc;
+            background: url('empty_letter.png') no-repeat center center;
+            background-size: cover;
+            border: none;
             font-size: 18px;
             font-weight: bold;
             color: #333;
@@ -64,8 +65,9 @@
         }
 
         .cell.green {
-            background: #7ed957; /* Pre-filled cells */
-            color: #fff;
+            background: url('green_letter.png') no-repeat center center;
+            background-size: cover;
+            color: #fff; /* Ensure text remains visible on green background */
         }
 
         .letters {

@@ -79,18 +79,29 @@
             align-items: center;
         }
 
-        .letter {
-            width: 70px;
-            height: 70px;
+        .keypad {
+            width: 300px;
+            height: 300px;
             background: url('keypad.png') no-repeat center center;
             background-size: cover;
-            font-size: 30px;
-            color: #fff;
+            position: relative;
+            border-radius: 50%; /* Ensures the background is circular */
+        }
+
+        .letter {
+            position: absolute;
+            width: 70px; /* Increased size */
+            height: 70px; /* Increased size */
+            font-size: 40px; /* Increased font size */
+            color: #fff; /* Keep text color consistent */
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            margin: 10px;
+            background: transparent; /* No individual background */
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #000; /* Enhance visibility */
+            border-radius: 50%; /* Optional: adds circular letter buttons */
         }
     </style>
 </head>
@@ -102,7 +113,9 @@
             <!-- Grid cells will be dynamically populated -->
         </div>
         <div class="letters" id="letters">
-            <!-- Letters will be dynamically populated -->
+            <div class="keypad">
+                <!-- Letters will be dynamically populated here -->
+            </div>
         </div>
     </div>
 
@@ -147,17 +160,29 @@
 
         function initLetters() {
             const angleStep = (2 * Math.PI) / availableLetters.length;
-            const radius = 100;
+            const radius = 120; // Increased radius for spacing larger letters
+            const centerOffset = 150; // Center of the 300px circle
+            const keypad = document.querySelector('.keypad');
+
             availableLetters.forEach((letter, index) => {
                 const letterElement = document.createElement('div');
                 letterElement.classList.add('letter');
                 letterElement.textContent = letter;
+
+                // Calculate the position on the circle
                 const angle = index * angleStep;
-                letterElement.style.position = 'absolute';
-                letterElement.style.left = `${150 + radius * Math.cos(angle)}px`;
-                letterElement.style.top = `${150 + radius * Math.sin(angle)}px`;
+                const x = radius * Math.cos(angle) + centerOffset - 35; // Adjust for larger size
+                const y = radius * Math.sin(angle) + centerOffset - 35; // Adjust for larger size
+
+                // Set position
+                letterElement.style.left = `${x}px`;
+                letterElement.style.top = `${y}px`;
+
+                // Add click functionality
                 letterElement.addEventListener('click', () => handleLetterClick(letter));
-                lettersContainer.appendChild(letterElement);
+
+                // Append to the keypad
+                keypad.appendChild(letterElement);
             });
         }
 

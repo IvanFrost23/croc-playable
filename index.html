@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playable Crossword Ad</title>
+    <title>Playable Crossword Game</title>
     <style>
         body {
             margin: 0;
@@ -42,8 +42,8 @@
             transform: translateX(-50%);
             display: grid;
             grid-template-columns: 1fr 1fr; /* 2 words per row */
-            grid-auto-rows: auto; /* Allow rows to adjust dynamically */
-            gap: 10px 40px; /* Spacing between words */
+            grid-auto-rows: auto;
+            gap: 10px 40px;
         }
 
         .word {
@@ -67,12 +67,47 @@
         .cell.green {
             background: url('green_letter.png') no-repeat center center;
             background-size: cover;
-            color: #fff; /* Ensure text remains visible on green background */
+            color: #fff;
+        }
+
+        #typed-word-container {
+            position: absolute;
+            bottom: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        #typed-word {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        button.cancel {
+            background-color: #dc3545;
         }
 
         .letters {
             position: absolute;
-            bottom: 100px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             width: 300px;
@@ -110,15 +145,21 @@
     <div class="grid" id="grid">
         <!-- Grid cells will be dynamically populated -->
     </div>
+    <div id="typed-word-container">
+        <div id="typed-word"></div>
+        <div class="buttons">
+            <button id="check-word">Check Word</button>
+            <button id="cancel" class="cancel">Cancel</button>
+        </div>
+    </div>
     <div class="letters" id="letters">
         <div class="keypad">
-            <!-- Letters will be dynamically populated here -->
+            <!-- Letters will be dynamically populated -->
         </div>
     </div>
 </div>
 
 <script>
-    // Grid words (2 words per row, 8 rows total, updated for 7 unique letters)
     const gridData = [
         [["P", "A", "T"], ["P", "A", "S", "T", "E"]],
         [["K", "I"], ["A", "S", "H"]],
@@ -130,23 +171,34 @@
         [["A", "B"], ["A", "S", "H"]],
     ];
 
-    // Reduced to 7 unique letters
+    const correctWords = [
+        "PAT", "PASTE", "KI", "ASH",
+        "PEN", "BAT", "MAP", "STE",
+        "SI", "AP", "AR", "KS",
+        "EP", "AT", "AB", "ASH"
+    ];
+
     const availableLetters = ['A', 'B', 'E', 'I', 'K', 'P', 'S'];
+    let typedWord = '';
 
     const grid = document.getElementById('grid');
-    const lettersContainer = document.getElementById('letters');
+    const typedWordElement = document.getElementById('typed-word');
+    const keypad = document.querySelector('.keypad');
 
     function initGrid() {
-        gridData.forEach((row) => {
-            row.forEach((word) => {
+        gridData.forEach((row, rowIndex) => {
+            row.forEach((word, wordIndex) => {
                 const wordContainer = document.createElement('div');
                 wordContainer.classList.add('word');
 
                 word.forEach((letter, index) => {
                     const cellElement = document.createElement('div');
                     cellElement.classList.add('cell');
+                    cellElement.dataset.row = rowIndex;
+                    cellElement.dataset.word = wordIndex;
+                    cellElement.dataset.index = index;
+
                     if (index === 0) {
-                        // Pre-fill first letters of words
                         cellElement.textContent = letter;
                         cellElement.classList.add('green');
                     }
@@ -162,7 +214,6 @@
         const angleStep = (2 * Math.PI) / availableLetters.length;
         const radius = 120;
         const centerOffset = 150;
-        const keypad = document.querySelector('.keypad');
 
         availableLetters.forEach((letter, index) => {
             const letterElement = document.createElement('div');
@@ -182,12 +233,32 @@
     }
 
     function handleLetterClick(letter) {
-        const emptyCell = document.querySelector('.cell:not(.green):empty');
-        if (emptyCell) {
-            emptyCell.textContent = letter;
-            emptyCell.classList.add('green');
-        }
+        typedWord += letter;
+        typedWordElement.textContent = typedWord;
     }
+
+    function checkWord() {
+        const wordIndex = correctWords.indexOf(typedWord);
+        if (wordIndex !== -1) {
+            // Reveal word on grid
+            const row = Math.floor(wordIndex / 2);
+            const word = wordIndex % 2;
+            const wordCells = document.querySelectorAll(`.cell[data-row="${row}"][data-word="${word}"]`);
+            wordCells.forEach((cell, index) => {
+                cell.textContent = correctWords[wordIndex][index];
+                cell.classList.add('green');
+            });
+        }
+        resetTypedWord();
+    }
+
+    function resetTypedWord() {
+        typedWord = '';
+        typedWordElement.textContent = '';
+    }
+
+    document.getElementById('check-word').addEventListener('click', checkWord);
+    document.getElementById('cancel').addEventListener('click', resetTypedWord);
 
     initGrid();
     initLetters();

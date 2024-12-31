@@ -24,15 +24,30 @@
             background-size: cover;
         }
 
-        #coin {
+        #coin-container {
             position: absolute;
-            top: 20px;
+            top: 40px;
             left: 20px;
+            width: 120px;
+            height: 30px;
+            background: url('menubar_bg.png') no-repeat center center;
+            background-size: contain;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            padding:  10px;
+        }
+
+        #coin-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        #coin-count {
             font-size: 24px;
-            background: #FFD700;
-            padding: 10px 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            color: #333;
         }
 
         .grid {
@@ -145,7 +160,10 @@
 <body>
 
 <div id="game-container">
-    <div id="coin">305</div>
+    <div id="coin-container">
+        <img src="coin.png" alt="Coin" id="coin-icon">
+        <span id="coin-count">305</span>
+    </div>
     <div class="grid" id="grid">
         <!-- Grid cells will be dynamically populated -->
     </div>

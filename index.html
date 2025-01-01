@@ -302,6 +302,18 @@
                     cellElement.dataset.word = wordIndex;
                     cellElement.dataset.index = index;
 
+                    cellElement.addEventListener('click', () => {
+                        if (cellElement.classList.contains('green') || cellElement.textContent !== '') {
+                            return; // Ignore clicks on filled cells
+                        }
+                        if (typedWord.length > 0) {
+                            cellElement.textContent = typedWord;
+                            typedWord = ''; // Clear typedWord after placing it in a cell
+                        }
+
+                    });
+
+
                     if (index === 0) {
                         cellElement.textContent = letter;
                         cellElement.classList.add('green');
@@ -316,8 +328,10 @@
 
     let isDragging = false;
     let draggedWord = '';
-    let letterPositions = {}; // Store letter positions
-    let draggedLetters = []; // Keep track of dragged letters in order
+    let letterPositions = {};
+    let draggedLetters = [];
+    let startX, startY;
+    const dragThreshold = 5
 
     function initLetters() {
         const angleStep = (2 * Math.PI) / availableLetters.length;
@@ -345,7 +359,11 @@
 
             letterElement.addEventListener('mousedown', (e) => startDrag(letter, e));
             letterElement.addEventListener('mouseenter', (e) => dragOver(letter, e));
-
+            letterElement.addEventListener('click', (e) => {
+                typedWord += letter;
+                typedWordElement.textContent = typedWord;
+                e.stopPropagation();
+            });
 
             keypad.appendChild(letterElement);
         });
@@ -355,11 +373,13 @@
     }
 
     function startDrag(letter, event) {
-        isDragging = true;
-        draggedWord = letter;
-        typedWordElement.textContent = draggedWord;
-        draggedLetters = [letter]; // Start a new sequence of dragged letters
-        event.preventDefault(); // Prevent default behavior like text selection
+        dragTimer = setTimeout(() => {
+            isDragging = true;
+            draggedWord = letter;
+            typedWordElement.textContent = draggedWord;
+            draggedLetters = [letter];
+            event.preventDefault();
+        }, 150); // Задержка 150 миллисекунд (можно настроить)
     }
 
     function dragOver(letter, event) {
@@ -368,8 +388,63 @@
             draggedWord += letter;
             typedWordElement.textContent = draggedWord;
             drawLine();
+            event.preventDefault();
         }
-        event.preventDefault();
+    }
+
+    function endDrag() {
+        clearTimeout(dragTimer); // Останавливаем таймер
+        if (isDragging) {
+            // Это был drag
+            isDragging = false;
+            typedWord = draggedWord;
+            draggedWord = '';
+            draggedLetters = [];
+            clearLines();
+            checkWord()
+        } else {
+            //Это был клик
+
+        }
+        console.log(`Dragged word: ${typedWord}`);
+    }
+    function initLetters() {
+        const angleStep = (2 * Math.PI) / availableLetters.length;
+        const radius = 120;
+        const centerOffset = 150;
+
+        availableLetters.forEach((letter, index) => {
+            const letterElement = document.createElement('div');
+            letterElement.classList.add('letter');
+            letterElement.textContent = letter;
+            letterElement.dataset.letter = letter; // Store the letter for easy access
+
+            const angle = index * angleStep;
+            const x = radius * Math.cos(angle) + centerOffset - 35;
+            const y = radius * Math.sin(angle) + centerOffset - 35;
+
+            letterElement.style.left = `${x}px`;
+            letterElement.style.top = `${y}px`;
+
+            // Store the center position of the letter
+            letterPositions[letter] = {
+                x: x + 35, // 35 is half of letter's width/height
+                y: y + 35
+            };
+
+            letterElement.addEventListener('mousedown', (e) => startDrag(letter, e));
+            letterElement.addEventListener('mouseenter', (e) => dragOver(letter, e));
+            letterElement.addEventListener('click', (e) => {
+                typedWord += letter;
+                typedWordElement.textContent = typedWord;
+                e.stopPropagation();
+            });
+
+            keypad.appendChild(letterElement);
+        });
+
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
     }
 
     function drawLine() {
@@ -393,16 +468,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function endDrag() {
-        if (isDragging) {
-            isDragging = false;
-            typedWord = draggedWord;
-            draggedWord = '';
-            draggedLetters = []; // Reset dragged letters
-            clearLines();
-            console.log(`Dragged word: ${typedWord}`);
-        }
-    }
+
 
     function checkWord() {
         const wordIndex = correctWords.indexOf(typedWord);
@@ -411,11 +477,21 @@
             const word = wordIndex % 2;
             const wordCells = document.querySelectorAll(`.cell[data-row="${row}"][data-word="${word}"]`);
             wordCells.forEach((cell, index) => {
-                cell.textContent = correctWords[wordIndex][index];
-                cell.classList.add('green');
+                if (!cell.classList.contains('green')) {
+                    cell.textContent = correctWords[wordIndex][index];
+                    cell.classList.add('green');
+                }
             });
+            resetTypedWord();
+        } else {
+            const typedWordContainer = document.getElementById('typed-word');
+            if (typedWordContainer.textContent.length > 0){
+                typedWord = '';
+                typedWordElement.textContent = '';
+            }
+
         }
-        resetTypedWord();
+
     }
 
     function resetTypedWord() {

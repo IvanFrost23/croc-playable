@@ -156,6 +156,16 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            user-select: none; /* Prevent text selection during drag */
+        }
+
+        #keypad-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            pointer-events: none; /* Allow clicks to pass through to elements below */
         }
     </style>
 </head>
@@ -182,6 +192,7 @@
     </div>
     <div class="letters" id="letters">
         <div class="keypad">
+            <canvas id="keypad-canvas"></canvas>
             <!-- Letters will be dynamically populated -->
         </div>
     </div>
@@ -214,6 +225,12 @@
     const grid = document.getElementById('grid');
     const typedWordElement = document.getElementById('typed-word');
     const keypad = document.querySelector('.keypad');
+    const canvas = document.getElementById('keypad-canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 300;
+    canvas.height = 300;
+
 
     function updateCoins(cost) {
         if (coinCount >= cost) {
@@ -297,6 +314,11 @@
         });
     }
 
+    let isDragging = false;
+    let draggedWord = '';
+    let letterPositions = {}; // Store letter positions
+    let draggedLetters = []; // Keep track of dragged letters in order
+
     function initLetters() {
         const angleStep = (2 * Math.PI) / availableLetters.length;
         const radius = 120;
@@ -306,6 +328,7 @@
             const letterElement = document.createElement('div');
             letterElement.classList.add('letter');
             letterElement.textContent = letter;
+            letterElement.dataset.letter = letter; // Store the letter for easy access
 
             const angle = index * angleStep;
             const x = radius * Math.cos(angle) + centerOffset - 35;
@@ -314,14 +337,71 @@
             letterElement.style.left = `${x}px`;
             letterElement.style.top = `${y}px`;
 
-            letterElement.addEventListener('click', () => handleLetterClick(letter));
+            // Store the center position of the letter
+            letterPositions[letter] = {
+                x: x + 35, // 35 is half of letter's width/height
+                y: y + 35
+            };
+
+            letterElement.addEventListener('mousedown', (e) => startDrag(letter, e));
+            letterElement.addEventListener('mouseenter', (e) => dragOver(letter, e));
+
+
             keypad.appendChild(letterElement);
         });
+
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
     }
 
-    function handleLetterClick(letter) {
-        typedWord += letter;
-        typedWordElement.textContent = typedWord;
+    function startDrag(letter, event) {
+        isDragging = true;
+        draggedWord = letter;
+        typedWordElement.textContent = draggedWord;
+        draggedLetters = [letter]; // Start a new sequence of dragged letters
+        event.preventDefault(); // Prevent default behavior like text selection
+    }
+
+    function dragOver(letter, event) {
+        if (isDragging && !draggedLetters.includes(letter)) {
+            draggedLetters.push(letter);
+            draggedWord += letter;
+            typedWordElement.textContent = draggedWord;
+            drawLine();
+        }
+        event.preventDefault();
+    }
+
+    function drawLine() {
+        if (draggedLetters.length < 2) return;
+
+        const prevLetter = draggedLetters[draggedLetters.length - 2];
+        const currentLetter = draggedLetters[draggedLetters.length - 1];
+
+        const start = letterPositions[prevLetter];
+        const end = letterPositions[currentLetter];
+
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        ctx.strokeStyle = 'blue'; // Or any color you prefer
+        ctx.lineWidth = 5;
+        ctx.stroke();
+    }
+
+    function clearLines() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function endDrag() {
+        if (isDragging) {
+            isDragging = false;
+            typedWord = draggedWord;
+            draggedWord = '';
+            draggedLetters = []; // Reset dragged letters
+            clearLines();
+            console.log(`Dragged word: ${typedWord}`);
+        }
     }
 
     function checkWord() {

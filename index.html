@@ -28,6 +28,7 @@
             background-size: cover;
             transform-origin: top left;
             overflow: hidden;
+            transition: transform 0.2s ease-in-out, left 0.2s ease-in-out, top 0.2s ease-in-out;
         }
 
         #coin-container {
@@ -431,6 +432,38 @@
     initGrid();
     initLetters();
 
+</script>
+
+<script>
+    function resizeGame() {
+        const gameContainer = document.getElementById('game-container');
+        const widthToHeightRatio = 600 / 931;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        let scaleFactor;
+
+        // Рассчитываем масштаб в зависимости от ширины и высоты экрана
+        if (viewportWidth / viewportHeight < widthToHeightRatio) {
+            scaleFactor = viewportWidth / 600;  // Масштаб по ширине
+        } else {
+            scaleFactor = viewportHeight / 931; // Масштаб по высоте
+        }
+
+        // Применяем масштабирование
+        gameContainer.style.transform = `scale(${scaleFactor})`;
+
+        // Центрируем контейнер
+        const scaledWidth = 600 * scaleFactor;
+        const scaledHeight = 931 * scaleFactor;
+
+        gameContainer.style.left = `${(viewportWidth - scaledWidth) / 2}px`;
+        gameContainer.style.top = `${(viewportHeight - scaledHeight) / 2}px`;
+    }
+
+    // Вызов функции при загрузке и изменении размера окна
+    window.addEventListener('resize', resizeGame);
+    window.addEventListener('load', resizeGame);
 </script>
 
 </body>

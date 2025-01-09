@@ -241,6 +241,8 @@
                         if (typedWord.length > 0) {
                             cellElement.textContent = typedWord;
                             typedWord = '';
+                            clearLines();
+                            clickedLetters = [];
                             hideActionButtons();
                         }
 
@@ -266,6 +268,7 @@
     let startX, startY;
     const dragThreshold = 5;
     let dragTimer;
+    let clickedLetters = []; // Store clicked letters for drawing lines
 
     function showActionButtons() {
         checkWordButton.style.display = 'block';
@@ -306,6 +309,8 @@
             letterElement.addEventListener('click', (e) => {
                 typedWord += letter;
                 typedWordElement.textContent = typedWord;
+                clickedLetters.push(letter); // Add clicked letter
+                drawLine(clickedLetters);    // Draw line for clicked letters
                 showActionButtons(); // Show buttons on click
                 e.stopPropagation();
             });
@@ -334,7 +339,7 @@
             draggedLetters.push(letter);
             draggedWord += letter;
             typedWordElement.textContent = draggedWord;
-            drawLine();
+            drawLine(draggedLetters); //Use general drawLine
             event.preventDefault();
 
         }
@@ -359,21 +364,23 @@
     }
 
 
-    function drawLine() {
-        if (draggedLetters.length < 2) return;
+    function drawLine(letters) {
+        clearLines(); // Clear previous lines before drawing new ones
+        if (letters.length < 2) return;
 
-        const prevLetter = draggedLetters[draggedLetters.length - 2];
-        const currentLetter = draggedLetters[draggedLetters.length - 1];
+        for (let i = 0; i < letters.length - 1; i++) {
+            const start = letterPositions[letters[i]];
+            const end = letterPositions[letters[i + 1]];
 
-        const start = letterPositions[prevLetter];
-        const end = letterPositions[currentLetter];
-
-        ctx.beginPath();
-        ctx.moveTo(start.x, start.y);
-        ctx.lineTo(end.x, end.y);
-        ctx.strokeStyle = 'blue';
-        ctx.lineWidth = 5;
-        ctx.stroke();
+            if (start && end) { // Ensure both start and end positions exist.
+                ctx.beginPath();
+                ctx.moveTo(start.x, start.y);
+                ctx.lineTo(end.x, end.y);
+                ctx.strokeStyle = 'blue';
+                ctx.lineWidth = 5;
+                ctx.stroke();
+            }
+        }
     }
 
     function clearLines() {
@@ -403,6 +410,8 @@
     function resetTypedWord() {
         typedWord = '';
         typedWordElement.textContent = '';
+        clearLines();       // Clear lines when resetting
+        clickedLetters = []; // Clear clicked letters
         hideActionButtons(); // Hide buttons after resetting
     }
 

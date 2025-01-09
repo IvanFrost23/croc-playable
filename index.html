@@ -190,24 +190,24 @@
 
 <script>
     const gridData = [
-        [["P", "A", "T"], ["P", "A", "S", "T", "E"]],
-        [["K", "I"], ["A", "S", "H"]],
-        [["P", "E", "N"], ["B", "A", "T"]],
-        [["M", "A", "P"], ["S", "T", "E"]],
-        [["S", "I"], ["A", "P"]],
-        [["A", "R"], ["K", "S"]],
-        [["E", "P"], ["A", "T"]],
-        [["A", "B"], ["A", "S", "H"]],
+        [["T", "E", "N"], ["A", "R", "T"]],
+        [["S", "T", "A", "R"], ["S", "L", "A", "N", "T"]],
+        [["R", "A", "T"], ["R", "E", "A", "L"]],
+        [["S", "T", "E", "R", "N"], ["L", "E", "A", "S", "T"]],
+        [["R", "E", "N", "T"], ["E", "A", "R"]],
+        [["N", "E", "T"], ["E", "A", "R", "T", "H"]],
+        [["A", "L", "E", "R", "T"], ["N", "E", "S", "T"]],
+        [["L", "A", "N", "E"], ["T", "E", "A", "R", "S"]],
     ];
 
     const correctWords = [
-        "PAT", "PASTE", "KI", "ASH",
-        "PEN", "BAT", "MAP", "STE",
-        "SI", "AP", "AR", "KS",
-        "EP", "AT", "AB", "ASH"
+        "TEN", "ART", "STAR", "SLANT",
+        "RAT", "REAL", "STERN", "LEAST",
+        "RENT", "EAR", "NET", "EARTH",
+        "ALERT", "NEST", "LANE", "TEARS"
     ];
 
-    const availableLetters = ['A', 'B', 'E', 'I', 'K', 'P', 'S'];
+    const availableLetters = ['A', 'E', 'T', 'S', 'N', 'R', 'L'];
     let typedWord = '';
     const coinCountElement = document.getElementById('coin-count');
     let coinCount = parseInt(coinCountElement.textContent, 10);

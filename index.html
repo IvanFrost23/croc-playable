@@ -21,7 +21,7 @@
         }
 
         #game-container {
-            position: relative;
+            position: absolute;
             width: 600px;
             height: 931px;
             background: url('background.png') no-repeat center center; /* Replace */
@@ -264,7 +264,6 @@
                 grid.appendChild(wordContainer);
             });
         });
-        resizeGame(); // Call after grid is populated
     }
 
     let isDragging = false;
@@ -415,30 +414,6 @@
         clickedLetters = [];
     }
 
-    function resizeGame() {
-        const containerWidth = gameContainer.offsetWidth;
-        const containerHeight = gameContainer.offsetHeight;
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-
-        const scaleX = windowWidth / containerWidth;
-        const scaleY = windowHeight / containerHeight;
-        const scale = Math.min(scaleX, scaleY);
-
-        if (scale < 1) {
-            gameContainer.style.transform = `scale(${scale})`;
-        } else {
-            gameContainer.style.transform = 'scale(1)';
-        }
-
-        const scaledWidth = containerWidth * scale;
-        const scaledHeight = containerHeight * scale;
-        const leftOffset = (windowWidth - scaledWidth) / 2;
-        const topOffset = (windowHeight - scaledHeight) / 2;
-
-        gameContainer.style.left = `${leftOffset}px`;
-        gameContainer.style.top = `${topOffset}px`;
-    }
 
     checkWordButton.addEventListener('click', checkWord);
     cancelButton.addEventListener('click', resetTypedWord);

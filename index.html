@@ -308,7 +308,16 @@
             };
 
             letterElement.addEventListener('mousedown', (e) => startDrag(letter, e));
+            letterElement.addEventListener('touchstart', (e) => startDrag(letter, e.touches[0]));
             letterElement.addEventListener('mouseenter', (e) => dragOver(letter, e));
+            letterElement.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                const letterElement = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (letterElement && letterElement.classList.contains('letter')) {
+                    const letter = letterElement.dataset.letter;
+                    dragOver(letter, e);
+                }
+            });
             letterElement.addEventListener('click', (e) => {
                 typedWord += letter;
                 typedWordElement.textContent = typedWord;

@@ -59,7 +59,7 @@
 
         .grid {
             position: absolute;
-            top: 150px;
+            top: 125px;
             left: 50%;
             transform: translateX(-50%);
             display: grid;
@@ -94,7 +94,7 @@
 
         #typed-word {
             position: absolute;
-            bottom: 100px;
+            bottom: 350px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
@@ -128,7 +128,7 @@
 
         .letters {
             position: absolute;
-            bottom: 50px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             width: 300px;
@@ -412,6 +412,7 @@
         typedWordElement.textContent = '';
         clearLines();
         clickedLetters = [];
+        hideActionButtons();
     }
 
 

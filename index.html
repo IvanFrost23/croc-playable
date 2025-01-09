@@ -86,44 +86,37 @@
             color: #fff;
         }
 
-        #typed-word-container {
+        #typed-word {
             position: absolute;
-            bottom: 400px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            text-align: center;
-        }
-
-        #typed-word {
             font-size: 24px;
             font-weight: bold;
             color: #333;
-            margin-bottom: -75px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
         }
 
-        .buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
+        .action-button {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: contain;
+            background-repeat: no-repeat;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            background-color: #28a745;
-            color: #fff;
         }
 
-        button.cancel {
-            background-color: #dc3545;
+        #check-word {
+            bottom: 20px;
+            left: 20px;
+            background: url('checkmark.png') no-repeat center center;
+        }
+
+        #cancel {
+            bottom: 20px;
+            right: 20px;
+            background: url('cross.png') no-repeat center center;
         }
 
         .letters {
@@ -179,13 +172,9 @@
     <div class="grid" id="grid">
         <!-- Grid cells will be dynamically populated -->
     </div>
-    <div id="typed-word-container">
-        <div id="typed-word"></div>
-        <div class="buttons">
-            <button id="check-word">Check Word</button>
-            <button id="cancel" class="cancel">Cancel</button>
-        </div>
-    </div>
+    <div id="typed-word"></div>
+    <button id="check-word" class="action-button"></button>
+    <button id="cancel" class="action-button"></button>
     <div class="letters" id="letters">
         <div class="keypad">
             <canvas id="keypad-canvas"></canvas>

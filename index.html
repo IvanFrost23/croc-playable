@@ -185,10 +185,6 @@
             <button id="check-word">Check Word</button>
             <button id="cancel" class="cancel">Cancel</button>
         </div>
-        <div class="buttons">
-            <button id="reveal-letter">Reveal Letter (10)</button>
-            <button id="reveal-word">Reveal Word (30)</button>
-        </div>
     </div>
     <div class="letters" id="letters">
         <div class="keypad">
@@ -232,63 +228,6 @@
     canvas.height = 300;
 
 
-    function updateCoins(cost) {
-        if (coinCount >= cost) {
-            coinCount -= cost;
-            coinCountElement.textContent = coinCount;
-            return true;
-        } else {
-            alert("Not enough coins!");
-            return false;
-        }
-    }
-
-    function revealRandomLetter() {
-        if (!updateCoins(10)) return;
-
-        const unopenedCells = Array.from(document.querySelectorAll('.cell'))
-            .filter(cell => !cell.classList.contains('green') && cell.textContent === '');
-
-        if (unopenedCells.length > 0) {
-            const randomCell = unopenedCells[Math.floor(Math.random() * unopenedCells.length)];
-            const row = randomCell.dataset.row;
-            const word = randomCell.dataset.word;
-            const index = randomCell.dataset.index;
-
-            randomCell.textContent = gridData[row][word][index];
-            randomCell.classList.add('green');
-        } else {
-            alert("No unopened letters left!");
-        }
-    }
-
-    function revealRandomWord() {
-        if (!updateCoins(30)) return;
-
-        const unopenedWords = [];
-        gridData.forEach((row, rowIndex) => {
-            row.forEach((word, wordIndex) => {
-                const wordCells = document.querySelectorAll(`.cell[data-row="${rowIndex}"][data-word="${wordIndex}"]`);
-                if (Array.from(wordCells).some(cell => !cell.classList.contains('green'))) {
-                    unopenedWords.push({ rowIndex, wordIndex, word });
-                }
-            });
-        });
-
-        if (unopenedWords.length > 0) {
-            const randomWord = unopenedWords[Math.floor(Math.random() * unopenedWords.length)];
-            const { rowIndex, wordIndex, word } = randomWord;
-
-            const wordCells = document.querySelectorAll(`.cell[data-row="${rowIndex}"][data-word="${wordIndex}"]`);
-            wordCells.forEach((cell, index) => {
-                cell.textContent = word[index];
-                cell.classList.add('green');
-            });
-        } else {
-            alert("No unopened words left!");
-        }
-    }
-
     function initGrid() {
         gridData.forEach((row, rowIndex) => {
             row.forEach((word, wordIndex) => {
@@ -304,11 +243,11 @@
 
                     cellElement.addEventListener('click', () => {
                         if (cellElement.classList.contains('green') || cellElement.textContent !== '') {
-                            return; // Ignore clicks on filled cells
+                            return;
                         }
                         if (typedWord.length > 0) {
                             cellElement.textContent = typedWord;
-                            typedWord = ''; // Clear typedWord after placing it in a cell
+                            typedWord = '';
                         }
 
                     });
@@ -342,7 +281,7 @@
             const letterElement = document.createElement('div');
             letterElement.classList.add('letter');
             letterElement.textContent = letter;
-            letterElement.dataset.letter = letter; // Store the letter for easy access
+            letterElement.dataset.letter = letter;
 
             const angle = index * angleStep;
             const x = radius * Math.cos(angle) + centerOffset - 35;
@@ -351,9 +290,8 @@
             letterElement.style.left = `${x}px`;
             letterElement.style.top = `${y}px`;
 
-            // Store the center position of the letter
             letterPositions[letter] = {
-                x: x + 35, // 35 is half of letter's width/height
+                x: x + 35,
                 y: y + 35
             };
 
@@ -379,7 +317,7 @@
             typedWordElement.textContent = draggedWord;
             draggedLetters = [letter];
             event.preventDefault();
-        }, 150); // Задержка 150 миллисекунд (можно настроить)
+        }, 150);
     }
 
     function dragOver(letter, event) {
@@ -393,20 +331,15 @@
     }
 
     function endDrag() {
-        clearTimeout(dragTimer); // Останавливаем таймер
+        clearTimeout(dragTimer);
         if (isDragging) {
-            // Это был drag
             isDragging = false;
             typedWord = draggedWord;
             draggedWord = '';
             draggedLetters = [];
             clearLines();
             checkWord()
-        } else {
-            //Это был клик
-
         }
-        console.log(`Dragged word: ${typedWord}`);
     }
     function initLetters() {
         const angleStep = (2 * Math.PI) / availableLetters.length;
@@ -417,7 +350,7 @@
             const letterElement = document.createElement('div');
             letterElement.classList.add('letter');
             letterElement.textContent = letter;
-            letterElement.dataset.letter = letter; // Store the letter for easy access
+            letterElement.dataset.letter = letter;
 
             const angle = index * angleStep;
             const x = radius * Math.cos(angle) + centerOffset - 35;
@@ -426,9 +359,8 @@
             letterElement.style.left = `${x}px`;
             letterElement.style.top = `${y}px`;
 
-            // Store the center position of the letter
             letterPositions[letter] = {
-                x: x + 35, // 35 is half of letter's width/height
+                x: x + 35,
                 y: y + 35
             };
 
@@ -459,7 +391,7 @@
         ctx.beginPath();
         ctx.moveTo(start.x, start.y);
         ctx.lineTo(end.x, end.y);
-        ctx.strokeStyle = 'blue'; // Or any color you prefer
+        ctx.strokeStyle = 'blue';
         ctx.lineWidth = 5;
         ctx.stroke();
     }
@@ -501,8 +433,6 @@
 
     document.getElementById('check-word').addEventListener('click', checkWord);
     document.getElementById('cancel').addEventListener('click', resetTypedWord);
-    document.getElementById('reveal-letter').addEventListener('click', revealRandomLetter);
-    document.getElementById('reveal-word').addEventListener('click', revealRandomWord);
 
     initGrid();
     initLetters();

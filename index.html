@@ -2,26 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Playable Crossword Game</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+            overflow: hidden;
+        }
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #f3f3f3;
             font-family: Arial, sans-serif;
-            height: 100vh;
         }
 
         #game-container {
             position: relative;
             width: 600px;
-            height: 932px;
-            background: url('background.png') no-repeat center center; /* Replace with your background image */
+            height: 931px;
+            background: url('background.png') no-repeat center center; /* Replace */
             background-size: cover;
+            transform-origin: top left;
+            overflow: hidden;
         }
 
         #coin-container {
@@ -53,11 +59,11 @@
 
         .grid {
             position: absolute;
-            top: 125px;
+            top: 150px;
             left: 50%;
             transform: translateX(-50%);
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 words per row */
+            grid-template-columns: 1fr 1fr;
             grid-auto-rows: auto;
             gap: 10px 40px;
         }
@@ -81,14 +87,14 @@
         }
 
         .cell.green {
-            background: url('green_letter.png') no-repeat center center;  /* Replace */
+            background: url('green_letter.png') no-repeat center center; /* Replace */
             background-size: cover;
             color: #fff;
         }
 
         #typed-word {
             position: absolute;
-            bottom: 390px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
@@ -105,7 +111,7 @@
             background-repeat: no-repeat;
             border: none;
             cursor: pointer;
-            display: none; /* Initially hidden */
+            display: none;
         }
 
         #check-word {
@@ -135,7 +141,7 @@
         .keypad {
             width: 300px;
             height: 300px;
-            background: url('keypad.png') no-repeat center center;  /* Replace */
+            background: url('keypad.png') no-repeat center center; /* Replace */
             background-size: cover;
             position: relative;
         }
@@ -150,7 +156,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            user-select: none; /* Prevent text selection */
+            user-select: none;
         }
 
         #keypad-canvas {
@@ -159,7 +165,7 @@
             left: 0;
             width: 300px;
             height: 300px;
-            pointer-events: none; /* Allow clicks through */
+            pointer-events: none;
         }
     </style>
 </head>
@@ -167,11 +173,10 @@
 
 <div id="game-container">
     <div id="coin-container">
-        <img src="coin.png" alt="Coin" id="coin-icon">  <!-- Replace with your coin image -->
+        <img src="coin.png" alt="Coin" id="coin-icon">
         <span id="coin-count">305</span>
     </div>
     <div class="grid" id="grid">
-        <!-- Grid cells will be dynamically populated -->
     </div>
     <div id="typed-word"></div>
     <button id="check-word" class="action-button"></button>
@@ -179,7 +184,6 @@
     <div class="letters" id="letters">
         <div class="keypad">
             <canvas id="keypad-canvas"></canvas>
-            <!-- Letters will be dynamically populated -->
         </div>
     </div>
 </div>
@@ -215,6 +219,7 @@
     const ctx = canvas.getContext('2d');
     const checkWordButton = document.getElementById('check-word');
     const cancelButton = document.getElementById('cancel');
+    const gameContainer = document.getElementById('game-container');
 
 
     canvas.width = 300;
@@ -259,16 +264,15 @@
                 grid.appendChild(wordContainer);
             });
         });
+        resizeGame(); // Call after grid is populated
     }
 
     let isDragging = false;
     let draggedWord = '';
     let letterPositions = {};
     let draggedLetters = [];
-    let startX, startY;
-    const dragThreshold = 5;
     let dragTimer;
-    let clickedLetters = []; // Store clicked letters for drawing lines
+    let clickedLetters = [];
 
     function showActionButtons() {
         checkWordButton.style.display = 'block';
@@ -309,9 +313,9 @@
             letterElement.addEventListener('click', (e) => {
                 typedWord += letter;
                 typedWordElement.textContent = typedWord;
-                clickedLetters.push(letter); // Add clicked letter
-                drawLine(clickedLetters);    // Draw line for clicked letters
-                showActionButtons(); // Show buttons on click
+                clickedLetters.push(letter);
+                drawLine(clickedLetters);
+                showActionButtons();
                 e.stopPropagation();
             });
 
@@ -323,11 +327,11 @@
     }
 
     function startDrag(letter, event) {
-        clearTimeout(dragTimer);  // Clear any existing timer.
+        clearTimeout(dragTimer);
         dragTimer = setTimeout(() => {
             isDragging = true;
             draggedWord = letter;
-            typedWordElement.textContent = draggedWord;
+            typedWordElement.textContent = draggedWord; // Keep showing dragged word
             draggedLetters = [letter];
             event.preventDefault();
         }, 150);
@@ -338,8 +342,8 @@
         if (isDragging && !draggedLetters.includes(letter)) {
             draggedLetters.push(letter);
             draggedWord += letter;
-            typedWordElement.textContent = draggedWord;
-            drawLine(draggedLetters); //Use general drawLine
+            typedWordElement.textContent = draggedWord; // Keep showing dragged word
+            drawLine(draggedLetters);
             event.preventDefault();
 
         }
@@ -349,30 +353,26 @@
         clearTimeout(dragTimer);
         if (isDragging) {
             isDragging = false;
-            typedWord = draggedWord;  // Set typedWord to the dragged word
+            // Crucial change: Don't clear typedWord here
+            typedWord = draggedWord; // Keep the dragged word
+            checkWord(); // Check word immediately after drag ends.
             draggedWord = '';
             draggedLetters = [];
             clearLines();
-            hideActionButtons(); //Hide when drag
-            // checkWord(); Don't check the word immediately after drag
-            if (typedWord) {
-                typedWord = '';
-                typedWordElement.textContent = '';
-            }
+            //Don't hide here
         }
-
     }
 
 
     function drawLine(letters) {
-        clearLines(); // Clear previous lines before drawing new ones
+        clearLines();
         if (letters.length < 2) return;
 
         for (let i = 0; i < letters.length - 1; i++) {
             const start = letterPositions[letters[i]];
             const end = letterPositions[letters[i + 1]];
 
-            if (start && end) { // Ensure both start and end positions exist.
+            if (start && end) {
                 ctx.beginPath();
                 ctx.moveTo(start.x, start.y);
                 ctx.lineTo(end.x, end.y);
@@ -401,18 +401,43 @@
                     cell.classList.add('green');
                 }
             });
-
         }
-        resetTypedWord();
-        hideActionButtons();
+        // Don't reset immediately; allow user to see the word
+        resetTypedWord(); // reset after checkword.
+        hideActionButtons(); //Hide after the check
     }
+
 
     function resetTypedWord() {
         typedWord = '';
         typedWordElement.textContent = '';
-        clearLines();       // Clear lines when resetting
-        clickedLetters = []; // Clear clicked letters
-        hideActionButtons(); // Hide buttons after resetting
+        clearLines();
+        clickedLetters = [];
+    }
+
+    function resizeGame() {
+        const containerWidth = gameContainer.offsetWidth;
+        const containerHeight = gameContainer.offsetHeight;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        const scaleX = windowWidth / containerWidth;
+        const scaleY = windowHeight / containerHeight;
+        const scale = Math.min(scaleX, scaleY);
+
+        if (scale < 1) {
+            gameContainer.style.transform = `scale(${scale})`;
+        } else {
+            gameContainer.style.transform = 'scale(1)';
+        }
+
+        const scaledWidth = containerWidth * scale;
+        const scaledHeight = containerHeight * scale;
+        const leftOffset = (windowWidth - scaledWidth) / 2;
+        const topOffset = (windowHeight - scaledHeight) / 2;
+
+        gameContainer.style.left = `${leftOffset}px`;
+        gameContainer.style.top = `${topOffset}px`;
     }
 
     checkWordButton.addEventListener('click', checkWord);
@@ -420,6 +445,7 @@
 
     initGrid();
     initLetters();
+
 </script>
 
 </body>

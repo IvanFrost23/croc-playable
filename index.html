@@ -20,15 +20,23 @@
             font-family: Arial, sans-serif;
         }
 
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('background.png') no-repeat center center;
+            background-size: cover;
+            z-index: -1; /* Фон за игровым контейнером */
+        }
+
         #game-container {
             position: absolute;
             width: 600px;
             height: 931px;
-            background: url('background.png') no-repeat center center; /* Replace */
-            background-size: cover;
-            transform-origin: top left;
             overflow: hidden;
-            transition: transform 0.2s ease-in-out, left 0.2s ease-in-out, top 0.2s ease-in-out;
+            transform-origin: top left;
         }
 
         #coin-container {
@@ -37,7 +45,7 @@
             left: 20px;
             width: 120px;
             height: 30px;
-            background: url('menubar_bg.png') no-repeat center center; /* Replace */
+            background: url('menubar_bg.png') no-repeat center center;
             background-size: contain;
             display: flex;
             align-items: center;
@@ -48,7 +56,7 @@
         #coin-icon {
             width: 50px;
             height: 50px;
-            margin-right: 0px;
+            margin-right: 0;
             transform: translateX(-20px);
         }
 
@@ -77,7 +85,7 @@
         .cell {
             width: 40px;
             height: 40px;
-            background: url('empty_letter.png') no-repeat center center; /* Replace */
+            background: url('empty_letter.png') no-repeat center center;
             background-size: cover;
             border: none;
             font-size: 18px;
@@ -88,7 +96,7 @@
         }
 
         .cell.green {
-            background: url('green_letter.png') no-repeat center center; /* Replace */
+            background: url('green_letter.png') no-repeat center center;
             background-size: cover;
             color: #fff;
         }
@@ -118,13 +126,13 @@
         #check-word {
             bottom: 20px;
             left: 20px;
-            background: url('checkmark.png') no-repeat center center; /* Replace */
+            background: url('checkmark.png') no-repeat center center;
         }
 
         #cancel {
             bottom: 20px;
             right: 20px;
-            background: url('cross.png') no-repeat center center; /* Replace */
+            background: url('cross.png') no-repeat center center;
         }
 
         .letters {
@@ -142,7 +150,7 @@
         .keypad {
             width: 300px;
             height: 300px;
-            background: url('keypad.png') no-repeat center center; /* Replace */
+            background: url('keypad.png') no-repeat center center;
             background-size: cover;
             position: relative;
         }
@@ -172,13 +180,14 @@
 </head>
 <body>
 
+<div id="background"></div> <!-- Фон -->
+
 <div id="game-container">
     <div id="coin-container">
         <img src="coin.png" alt="Coin" id="coin-icon">
         <span id="coin-count">305</span>
     </div>
-    <div class="grid" id="grid">
-    </div>
+    <div class="grid" id="grid"></div>
     <div id="typed-word"></div>
     <button id="check-word" class="action-button"></button>
     <button id="cancel" class="action-button"></button>
@@ -443,17 +452,17 @@
 
         let scaleFactor;
 
-        // Рассчитываем масштаб в зависимости от ширины и высоты экрана
+        // Масштабирование в зависимости от соотношения сторон
         if (viewportWidth / viewportHeight < widthToHeightRatio) {
-            scaleFactor = viewportWidth / 600;  // Масштаб по ширине
+            scaleFactor = viewportWidth / 600;
         } else {
-            scaleFactor = viewportHeight / 931; // Масштаб по высоте
+            scaleFactor = viewportHeight / 931;
         }
 
         // Применяем масштабирование
         gameContainer.style.transform = `scale(${scaleFactor})`;
 
-        // Центрируем контейнер
+        // Центрирование по вертикали и горизонтали
         const scaledWidth = 600 * scaleFactor;
         const scaledHeight = 931 * scaleFactor;
 

@@ -20,7 +20,7 @@
             position: relative;
             width: 600px;
             height: 1000px;
-            background: url('background.png') no-repeat center center;
+            background: url('background.png') no-repeat center center; /* Replace with your background image */
             background-size: cover;
         }
 
@@ -30,7 +30,7 @@
             left: 20px;
             width: 120px;
             height: 30px;
-            background: url('menubar_bg.png') no-repeat center center;
+            background: url('menubar_bg.png') no-repeat center center; /* Replace */
             background-size: contain;
             display: flex;
             align-items: center;
@@ -70,7 +70,7 @@
         .cell {
             width: 40px;
             height: 40px;
-            background: url('empty_letter.png') no-repeat center center;
+            background: url('empty_letter.png') no-repeat center center; /* Replace */
             background-size: cover;
             border: none;
             font-size: 18px;
@@ -81,7 +81,7 @@
         }
 
         .cell.green {
-            background: url('green_letter.png') no-repeat center center;
+            background: url('green_letter.png') no-repeat center center;  /* Replace */
             background-size: cover;
             color: #fff;
         }
@@ -105,18 +105,19 @@
             background-repeat: no-repeat;
             border: none;
             cursor: pointer;
+            display: none; /* Initially hidden */
         }
 
         #check-word {
             bottom: 20px;
             left: 20px;
-            background: url('checkmark.png') no-repeat center center;
+            background: url('checkmark.png') no-repeat center center; /* Replace */
         }
 
         #cancel {
             bottom: 20px;
             right: 20px;
-            background: url('cross.png') no-repeat center center;
+            background: url('cross.png') no-repeat center center; /* Replace */
         }
 
         .letters {
@@ -134,7 +135,7 @@
         .keypad {
             width: 300px;
             height: 300px;
-            background: url('keypad.png') no-repeat center center;
+            background: url('keypad.png') no-repeat center center;  /* Replace */
             background-size: cover;
             position: relative;
         }
@@ -149,7 +150,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            user-select: none; /* Prevent text selection during drag */
+            user-select: none; /* Prevent text selection */
         }
 
         #keypad-canvas {
@@ -158,7 +159,7 @@
             left: 0;
             width: 300px;
             height: 300px;
-            pointer-events: none; /* Allow clicks to pass through to elements below */
+            pointer-events: none; /* Allow clicks through */
         }
     </style>
 </head>
@@ -166,7 +167,7 @@
 
 <div id="game-container">
     <div id="coin-container">
-        <img src="coin.png" alt="Coin" id="coin-icon">
+        <img src="coin.png" alt="Coin" id="coin-icon">  <!-- Replace with your coin image -->
         <span id="coin-count">305</span>
     </div>
     <div class="grid" id="grid">
@@ -212,6 +213,9 @@
     const keypad = document.querySelector('.keypad');
     const canvas = document.getElementById('keypad-canvas');
     const ctx = canvas.getContext('2d');
+    const checkWordButton = document.getElementById('check-word');
+    const cancelButton = document.getElementById('cancel');
+
 
     canvas.width = 300;
     canvas.height = 300;
@@ -237,6 +241,7 @@
                         if (typedWord.length > 0) {
                             cellElement.textContent = typedWord;
                             typedWord = '';
+                            hideActionButtons();
                         }
 
                     });
@@ -259,7 +264,19 @@
     let letterPositions = {};
     let draggedLetters = [];
     let startX, startY;
-    const dragThreshold = 5
+    const dragThreshold = 5;
+    let dragTimer;
+
+    function showActionButtons() {
+        checkWordButton.style.display = 'block';
+        cancelButton.style.display = 'block';
+    }
+
+    function hideActionButtons() {
+        checkWordButton.style.display = 'none';
+        cancelButton.style.display = 'none';
+    }
+
 
     function initLetters() {
         const angleStep = (2 * Math.PI) / availableLetters.length;
@@ -289,6 +306,7 @@
             letterElement.addEventListener('click', (e) => {
                 typedWord += letter;
                 typedWordElement.textContent = typedWord;
+                showActionButtons(); // Show buttons on click
                 e.stopPropagation();
             });
 
@@ -300,6 +318,7 @@
     }
 
     function startDrag(letter, event) {
+        clearTimeout(dragTimer);  // Clear any existing timer.
         dragTimer = setTimeout(() => {
             isDragging = true;
             draggedWord = letter;
@@ -309,6 +328,7 @@
         }, 150);
     }
 
+
     function dragOver(letter, event) {
         if (isDragging && !draggedLetters.includes(letter)) {
             draggedLetters.push(letter);
@@ -316,6 +336,7 @@
             typedWordElement.textContent = draggedWord;
             drawLine();
             event.preventDefault();
+
         }
     }
 
@@ -323,50 +344,20 @@
         clearTimeout(dragTimer);
         if (isDragging) {
             isDragging = false;
-            typedWord = draggedWord;
+            typedWord = draggedWord;  // Set typedWord to the dragged word
             draggedWord = '';
             draggedLetters = [];
             clearLines();
-            checkWord()
+            hideActionButtons(); //Hide when drag
+            // checkWord(); Don't check the word immediately after drag
+            if (typedWord) {
+                typedWord = '';
+                typedWordElement.textContent = '';
+            }
         }
+
     }
-    function initLetters() {
-        const angleStep = (2 * Math.PI) / availableLetters.length;
-        const radius = 120;
-        const centerOffset = 150;
 
-        availableLetters.forEach((letter, index) => {
-            const letterElement = document.createElement('div');
-            letterElement.classList.add('letter');
-            letterElement.textContent = letter;
-            letterElement.dataset.letter = letter;
-
-            const angle = index * angleStep;
-            const x = radius * Math.cos(angle) + centerOffset - 35;
-            const y = radius * Math.sin(angle) + centerOffset - 35;
-
-            letterElement.style.left = `${x}px`;
-            letterElement.style.top = `${y}px`;
-
-            letterPositions[letter] = {
-                x: x + 35,
-                y: y + 35
-            };
-
-            letterElement.addEventListener('mousedown', (e) => startDrag(letter, e));
-            letterElement.addEventListener('mouseenter', (e) => dragOver(letter, e));
-            letterElement.addEventListener('click', (e) => {
-                typedWord += letter;
-                typedWordElement.textContent = typedWord;
-                e.stopPropagation();
-            });
-
-            keypad.appendChild(letterElement);
-        });
-
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-    }
 
     function drawLine() {
         if (draggedLetters.length < 2) return;
@@ -403,25 +394,20 @@
                     cell.classList.add('green');
                 }
             });
-            resetTypedWord();
-        } else {
-            const typedWordContainer = document.getElementById('typed-word');
-            if (typedWordContainer.textContent.length > 0){
-                typedWord = '';
-                typedWordElement.textContent = '';
-            }
 
         }
-
+        resetTypedWord();
+        hideActionButtons();
     }
 
     function resetTypedWord() {
         typedWord = '';
         typedWordElement.textContent = '';
+        hideActionButtons(); // Hide buttons after resetting
     }
 
-    document.getElementById('check-word').addEventListener('click', checkWord);
-    document.getElementById('cancel').addEventListener('click', resetTypedWord);
+    checkWordButton.addEventListener('click', checkWord);
+    cancelButton.addEventListener('click', resetTypedWord);
 
     initGrid();
     initLetters();

@@ -88,7 +88,7 @@
             background: url('empty_letter.png') no-repeat center center;
             background-size: cover;
             border: none;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             color: #333;
             text-align: center;
@@ -384,8 +384,20 @@
 
     function drawLine(letters) {
         clearLines();
-        if (letters.length < 2) return;
+        if (letters.length < 1) return;
 
+        // Рисование окружностей
+        letters.forEach(letter => {
+            const pos = letterPositions[letter];
+            if (pos) {
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 30, 0, 2 * Math.PI); // Радиус круга — 20
+                ctx.fillStyle = 'rgba(128, 0, 255, 0.8)'; // Цвет заполнения (полупрозрачный фиолетовый)
+                ctx.fill();
+            }
+        });
+
+        // Рисование линий
         for (let i = 0; i < letters.length - 1; i++) {
             const start = letterPositions[letters[i]];
             const end = letterPositions[letters[i + 1]];
@@ -395,11 +407,12 @@
                 ctx.moveTo(start.x, start.y);
                 ctx.lineTo(end.x, end.y);
                 ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 5;
+                ctx.lineWidth = 9;
                 ctx.stroke();
             }
         }
     }
+
 
     function clearLines() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);

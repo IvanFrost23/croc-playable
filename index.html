@@ -350,7 +350,7 @@
         dragTimer = setTimeout(() => {
             isDragging = true;
             draggedWord = letter;
-            typedWordElement.textContent = draggedWord; // Keep showing dragged word
+            typedWordElement.textContent = draggedWord;
             draggedLetters = [letter];
             event.preventDefault();
         }, 150);
@@ -361,7 +361,7 @@
         if (isDragging && !draggedLetters.includes(letter)) {
             draggedLetters.push(letter);
             draggedWord += letter;
-            typedWordElement.textContent = draggedWord; // Keep showing dragged word
+            typedWordElement.textContent = draggedWord;
             drawLine(draggedLetters);
             event.preventDefault();
 
@@ -372,13 +372,12 @@
         clearTimeout(dragTimer);
         if (isDragging) {
             isDragging = false;
-            // Crucial change: Don't clear typedWord here
-            typedWord = draggedWord; // Keep the dragged word
-            checkWord(); // Check word immediately after drag ends.
+
+            typedWord = draggedWord;
+            checkWord();
             draggedWord = '';
             draggedLetters = [];
             clearLines();
-            //Don't hide here
         }
     }
 
@@ -387,18 +386,17 @@
         clearLines();
         if (letters.length < 1) return;
 
-        // Рисование окружностей
         letters.forEach(letter => {
             const pos = letterPositions[letter];
             if (pos) {
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 30, 0, 2 * Math.PI); // Радиус круга — 20
-                ctx.fillStyle = 'rgba(128, 0, 255, 0.8)'; // Цвет заполнения (полупрозрачный фиолетовый)
+                ctx.arc(pos.x, pos.y, 30, 0, 2 * Math.PI);
+                ctx.fillStyle = 'rgba(128, 0, 255, 0.8)';
                 ctx.fill();
             }
         });
 
-        // Рисование линий
+
         for (let i = 0; i < letters.length - 1; i++) {
             const start = letterPositions[letters[i]];
             const end = letterPositions[letters[i + 1]];
@@ -434,9 +432,9 @@
                 }
             });
         }
-        // Don't reset immediately; allow user to see the word
-        resetTypedWord(); // reset after checkword.
-        hideActionButtons(); //Hide after the check
+
+        resetTypedWord();
+        hideActionButtons();
     }
 
 
@@ -466,17 +464,14 @@
 
         let scaleFactor;
 
-        // Масштабирование в зависимости от соотношения сторон
         if (viewportWidth / viewportHeight < widthToHeightRatio) {
             scaleFactor = viewportWidth / 600;
         } else {
             scaleFactor = viewportHeight / 931;
         }
 
-        // Применяем масштабирование
         gameContainer.style.transform = `scale(${scaleFactor})`;
 
-        // Центрирование по вертикали и горизонтали
         const scaledWidth = 600 * scaleFactor;
         const scaledHeight = 931 * scaleFactor;
 
@@ -484,7 +479,6 @@
         gameContainer.style.top = `${(viewportHeight - scaledHeight) / 2}px`;
     }
 
-    // Вызов функции при загрузке и изменении размера окна
     window.addEventListener('resize', resizeGame);
     window.addEventListener('load', resizeGame);
 </script>

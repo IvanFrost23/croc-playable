@@ -123,18 +123,6 @@
             display: none;
         }
 
-        #check-word {
-            bottom: 20px;
-            right: 20px;
-            background: url('checkmark.png') no-repeat center center;
-        }
-
-        #cancel {
-            bottom: 20px;
-            left: 20px;
-            background: url('cross.png') no-repeat center center;
-        }
-
         .letters {
             position: absolute;
             bottom: 15px;
@@ -190,8 +178,6 @@
     </div>
     <div class="grid" id="grid"></div>
     <div id="typed-word"></div>
-    <button id="check-word" class="action-button"></button>
-    <button id="cancel" class="action-button"></button>
     <div class="letters" id="letters">
         <div class="keypad">
             <canvas id="keypad-canvas"></canvas>
@@ -228,8 +214,6 @@
     const keypad = document.querySelector('.keypad');
     const canvas = document.getElementById('keypad-canvas');
     const ctx = canvas.getContext('2d');
-    const checkWordButton = document.getElementById('check-word');
-    const cancelButton = document.getElementById('cancel');
     const gameContainer = document.getElementById('game-container');
 
 
@@ -250,21 +234,6 @@
                     cellElement.dataset.word = wordIndex;
                     cellElement.dataset.index = index;
 
-                    cellElement.addEventListener('click', () => {
-                        if (cellElement.classList.contains('green') || cellElement.textContent !== '') {
-                            return;
-                        }
-                        if (typedWord.length > 0) {
-                            cellElement.textContent = typedWord;
-                            typedWord = '';
-                            clearLines();
-                            clickedLetters = [];
-                            hideActionButtons();
-                        }
-
-                    });
-
-
                     if (index === 0) {
                         cellElement.textContent = letter;
                         cellElement.classList.add('green');
@@ -283,17 +252,6 @@
     let draggedLetters = [];
     let dragTimer;
     let clickedLetters = [];
-
-    function showActionButtons() {
-        checkWordButton.style.display = 'block';
-        cancelButton.style.display = 'block';
-    }
-
-    function hideActionButtons() {
-        checkWordButton.style.display = 'none';
-        cancelButton.style.display = 'none';
-    }
-
 
     function initLetters() {
         const angleStep = (2 * Math.PI) / availableLetters.length;
@@ -328,14 +286,6 @@
                     const letter = letterElement.dataset.letter;
                     dragOver(letter, e);
                 }
-            });
-            letterElement.addEventListener('click', (e) => {
-                typedWord += letter;
-                typedWordElement.textContent = typedWord;
-                clickedLetters.push(letter);
-                drawLine(clickedLetters);
-                showActionButtons();
-                e.stopPropagation();
             });
 
             keypad.appendChild(letterElement);
@@ -445,10 +395,6 @@
         clickedLetters = [];
         hideActionButtons();
     }
-
-
-    checkWordButton.addEventListener('click', checkWord);
-    cancelButton.addEventListener('click', resetTypedWord);
 
     initGrid();
     initLetters();

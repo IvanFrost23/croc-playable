@@ -431,17 +431,17 @@
         const typedWordContainer = document.getElementById('typed-word');
 
         if (correctWords.includes(typedWord)) {
-            const wordIndex = correctWords.indexOf(typedWord);
-            const row = Math.floor(wordIndex / 2);
-            const word = wordIndex % 2;
-            const wordCells = document.querySelectorAll(`.cell[data-row="${row}"][data-word="${word}"]`);
-            wordCells.forEach((cell, index) => {
-                if (!cell.classList.contains('green')) {
-                    cell.textContent = correctWords[wordIndex][index];
-                    cell.classList.add('green');
+            const gridCells = Array.from(document.querySelectorAll('.grid .cell'));
+
+            let startIndex = 0;
+            for (let i = 0; i < correctWords.length; i++) {
+                if (correctWords[i] === typedWord) {
+                    break;
                 }
-            });
-            resetTypedWord();
+                startIndex += correctWords[i].length;
+            }
+
+            animateCorrectWord(gridCells.slice(startIndex, startIndex + typedWord.length));
         } else {
             const crossImage = document.createElement('div');
             crossImage.classList.add('cross');
@@ -453,6 +453,39 @@
                 resetTypedWord();
             }, 500);
         }
+    }
+
+    function animateCorrectWord(targetCells) {
+        const typedWordContainer = document.getElementById('typed-word');
+        const letters = Array.from(typedWordContainer.children);
+
+        letters.forEach((letterElement, index) => {
+            const targetCell = targetCells[index];
+            const { left: startX, top: startY } = letterElement.getBoundingClientRect();
+            const { left: endX, top: endY } = targetCell.getBoundingClientRect();
+
+            // Create a clone for animation
+            const animationElement = letterElement.cloneNode(true);
+            animationElement.style.position = 'absolute';
+            animationElement.style.left = `${startX}px`;
+            animationElement.style.top = `${startY}px`;
+            animationElement.style.transition = 'transform 0.5s ease, left 0.5s ease, top 0.5s ease';
+            document.body.appendChild(animationElement);
+
+            // Animate to the target position
+            setTimeout(() => {
+                animationElement.style.left = `${endX}px`;
+                animationElement.style.top = `${endY}px`;
+                animationElement.style.transform = 'scale(1.2)';
+            }, 0);
+
+            // Cleanup after animation
+            animationElement.addEventListener('transitionend', () => {
+                animationElement.remove();
+                targetCell.textContent = letterElement.textContent;
+                targetCell.classList.add('green');
+            });
+        });
     }
 
     function resetTypedWord() {

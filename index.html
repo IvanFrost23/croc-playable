@@ -244,23 +244,23 @@
 <script>
     const gridData = [
         [["T", "E", "N"], ["A", "R", "T"]],
-        [["S", "T", "A", "R"], ["S", "L", "A", "N", "T"]],
-        [["R", "A", "T"], ["R", "E", "A", "L"]],
+        [["R", "A", "T"], ["E", "A", "R"]],
+        [["R", "E", "A", "L"], ["R", "E", "N", "T"]],
         [["S", "T", "E", "R", "N"], ["L", "E", "A", "S", "T"]],
-        [["R", "E", "N", "T"], ["E", "A", "R"]],
-        [["N", "E", "T"], ["L", "E", "A", "R", "N"]],
-        [["A", "L", "E", "R", "T"], ["N", "E", "S", "T"]],
-        [["L", "A", "N", "E"], ["T", "E", "A", "R", "S"]],
+        [["A", "L", "E", "R", "T"], ["T", "E", "A", "R", "S"]],
+        [["S", "N", "A", "R", "E"], ["R", "A", "T", "E", "S"]],
+        [["A", "S", "T", "E", "R"], ["S", "L", "A", "N", "T"]],
+        [["L", "E", "A", "R", "N"], ["S", "T", "E", "A", "L"]],
     ];
 
     const correctWords = [
-        "TEN", "ART", "STAR", "SLANT",
-        "RAT", "REAL", "STERN", "LEAST",
-        "RENT", "EAR", "NET", "LEARN",
-        "ALERT", "NEST", "LANE", "TEARS"
+        "TEN", "ART", "RAT", "EAR",
+        "REAL", "RENT", "STERN", "LEAST",
+        "ALERT", "TEARS", "SNARE", "RATES",
+        "ASTER", "SLANT", "LEARN", "STEAL"
     ];
 
-    const availableLetters = ['A', 'E', 'T', 'S', 'N', 'R', 'L'];
+        const availableLetters = ['A', 'E', 'T', 'S', 'N', 'R', 'L'];
     let typedWord = '';
     const coinCountElement = document.getElementById('coin-count');
     let coinCount = parseInt(coinCountElement.textContent, 10);
@@ -318,7 +318,7 @@
             letterElement.textContent = letter;
             letterElement.dataset.letter = letter;
 
-            const angle = index * angleStep;
+            const angle = index * angleStep - Math.PI / 2;
             const x = radius * Math.cos(angle) + centerOffset - 35;
             const y = radius * Math.sin(angle) + centerOffset - 35;
 

@@ -406,7 +406,7 @@
             if (pos) {
                 ctx.beginPath();
                 ctx.arc(pos.x, pos.y, 30, 0, 2 * Math.PI);
-                ctx.fillStyle = 'rgba(128, 0, 255, 0.8)';
+                ctx.fillStyle = 'rgba(140, 50, 187, 0.8)';
                 ctx.fill();
             }
         });
@@ -419,8 +419,8 @@
                 ctx.beginPath();
                 ctx.moveTo(start.x, start.y);
                 ctx.lineTo(end.x, end.y);
-                ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 9;
+                ctx.strokeStyle = 'rgba(140, 50, 187, 0.8)';
+                ctx.lineWidth = 15;
                 ctx.stroke();
             }
         }
@@ -430,10 +430,17 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    const guessedWords = new Set();
     function checkWord() {
         const typedWordContainer = document.getElementById('typed-word');
 
+        if (guessedWords.has(typedWord)) {
+            resetTypedWord();
+            return;
+        }
+
         if (correctWords.includes(typedWord)) {
+            guessedWords.add(typedWord);
             setTimeout(function () {
                 const gridCells = Array.from(document.querySelectorAll('.grid .cell'));
 

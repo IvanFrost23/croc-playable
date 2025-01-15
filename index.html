@@ -369,6 +369,9 @@
 
             if (index === draggedWord.length - 1) {
                 letterBlock.classList.add('appear');
+                setTimeout(() => {
+                    letterBlock.classList.remove('appear');
+                }, 300);
             }
             typedWordContainer.appendChild(letterBlock);
         });
@@ -431,17 +434,19 @@
         const typedWordContainer = document.getElementById('typed-word');
 
         if (correctWords.includes(typedWord)) {
-            const gridCells = Array.from(document.querySelectorAll('.grid .cell'));
+            setTimeout(function () {
+                const gridCells = Array.from(document.querySelectorAll('.grid .cell'));
 
-            let startIndex = 0;
-            for (let i = 0; i < correctWords.length; i++) {
-                if (correctWords[i] === typedWord) {
-                    break;
+                let startIndex = 0;
+                for (let i = 0; i < correctWords.length; i++) {
+                    if (correctWords[i] === typedWord) {
+                        break;
+                    }
+                    startIndex += correctWords[i].length;
                 }
-                startIndex += correctWords[i].length;
-            }
 
-            animateCorrectWord(gridCells.slice(startIndex, startIndex + typedWord.length));
+                animateCorrectWord(gridCells.slice(startIndex, startIndex + typedWord.length));
+            }, 300);
         } else {
             const crossImage = document.createElement('div');
             crossImage.classList.add('cross');
@@ -459,27 +464,26 @@
         const typedWordContainer = document.getElementById('typed-word');
         const letters = Array.from(typedWordContainer.children);
 
-        letters.forEach((letterElement, index) => {
+        letters.forEach(function (letterElement, index) {
             const targetCell = targetCells[index];
             const { left: startX, top: startY } = letterElement.getBoundingClientRect();
             const { left: endX, top: endY } = targetCell.getBoundingClientRect();
 
-            // Create a clone for animation
             const animationElement = letterElement.cloneNode(true);
             animationElement.style.position = 'absolute';
             animationElement.style.left = `${startX}px`;
             animationElement.style.top = `${startY}px`;
             animationElement.style.transition = 'transform 0.5s ease, left 0.5s ease, top 0.5s ease';
+            animationElement.style.transitionDelay = `${index * 0.1}s`;
             document.body.appendChild(animationElement);
 
-            // Animate to the target position
             setTimeout(() => {
                 animationElement.style.left = `${endX}px`;
                 animationElement.style.top = `${endY}px`;
                 animationElement.style.transform = 'scale(1.2)';
+                letterElement.remove();
             }, 0);
 
-            // Cleanup after animation
             animationElement.addEventListener('transitionend', () => {
                 animationElement.remove();
                 targetCell.textContent = letterElement.textContent;

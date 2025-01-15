@@ -120,6 +120,26 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            opacity: 1;
+            transform: scale(1);
+            transition: none;
+        }
+
+        .typed-cell.appear {
+            opacity: 0;
+            transform: scale(0.5);
+            animation: fadeInScale 0.3s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         #typed-word {
@@ -130,6 +150,7 @@
             transform: translateX(-50%);
             text-align: center;
             left: 50%;
+            transition: transform 0.3s ease;
         }
 
         .letters {
@@ -315,12 +336,18 @@
         const typedWordContainer = document.getElementById('typed-word');
         typedWordContainer.innerHTML = '';
 
-        for (const letter of draggedWord) {
+        draggedWord.split('').forEach((letter, index) => {
             const letterBlock = document.createElement('div');
             letterBlock.classList.add('typed-cell');
             letterBlock.textContent = letter;
+
+            // Анимация только для последней буквы
+            if (index === draggedWord.length - 1) {
+                letterBlock.classList.add('appear');
+            }
+
             typedWordContainer.appendChild(letterBlock);
-        }
+        });
     }
 
     function dragOver(letter) {

@@ -131,6 +131,13 @@
             animation: fadeInScale 0.3s ease forwards;
         }
 
+        .cross {
+            width: 50px;
+            height: 57px;
+            background: url('cross.png') no-repeat center center;
+            background-size: contain;
+        }
+
         @keyframes fadeInScale {
             from {
                 opacity: 0;
@@ -205,7 +212,7 @@
         }
 
         .shake {
-            animation: shake 0.3s ease;
+            animation: shake 0.5s ease;
         }
 
         @keyframes fadeOut {
@@ -436,14 +443,17 @@
             });
             resetTypedWord();
         } else {
+            const crossImage = document.createElement('div');
+            crossImage.classList.add('cross');
+            typedWordContainer.appendChild(crossImage);
+
             typedWordContainer.classList.add('shake');
             setTimeout(() => {
                 typedWordContainer.classList.remove('shake');
                 resetTypedWord();
-            }, 300);
+            }, 500);
         }
     }
-
 
     function resetTypedWord() {
         typedWord = '';

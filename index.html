@@ -107,15 +107,30 @@
             color: #fff;
         }
 
-        #typed-word {
-            position: absolute;
-            bottom: 350px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
+        .typed-cell {
+            width: 50px;
+            height: 57px;
+            background: url('green_letter.png') no-repeat center center;
+            background-size: cover;
+            font-size: 36px;
             font-weight: bold;
-            color: #333;
+            color: #fff;
             text-align: center;
+            line-height: 57px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #typed-word {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            position: absolute;
+            bottom: 325px;
+            transform: translateX(-50%);
+            text-align: center;
+            left: 50%;
         }
 
         .letters {
@@ -293,13 +308,27 @@
         draggedWord = letter;
         typedWordElement.textContent = draggedWord;
         draggedLetters = [letter];
+
+        updateTypedWordDisplay();
+    }
+
+    function updateTypedWordDisplay() {
+        const typedWordContainer = document.getElementById('typed-word');
+        typedWordContainer.innerHTML = '';
+
+        for (const letter of draggedWord) {
+            const letterBlock = document.createElement('div');
+            letterBlock.classList.add('typed-cell');
+            letterBlock.textContent = letter;
+            typedWordContainer.appendChild(letterBlock);
+        }
     }
 
     function dragOver(letter) {
         if (isDragging && !draggedLetters.includes(letter)) {
             draggedLetters.push(letter);
             draggedWord += letter;
-            typedWordElement.textContent = draggedWord;
+            updateTypedWordDisplay();
             drawLine(draggedLetters);
         }
     }
@@ -367,7 +396,8 @@
 
     function resetTypedWord() {
         typedWord = '';
-        typedWordElement.textContent = '';
+        const typedWordContainer = document.getElementById('typed-word');
+        typedWordContainer.innerHTML = '';
         clearLines();
         clickedLetters = [];
     }

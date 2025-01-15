@@ -195,6 +195,25 @@
             height: 300px;
             pointer-events: none;
         }
+
+        @keyframes shake {
+            0% { margin-left: 0; }
+            25% { margin-left: -5px; }
+            50% { margin-left: 5px; }
+            75% { margin-left: -5px; }
+            100% { margin-left: 0; }
+        }
+
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
     </style>
 </head>
 <body>
@@ -341,11 +360,9 @@
             letterBlock.classList.add('typed-cell');
             letterBlock.textContent = letter;
 
-            // Анимация только для последней буквы
             if (index === draggedWord.length - 1) {
                 letterBlock.classList.add('appear');
             }
-
             typedWordContainer.appendChild(letterBlock);
         });
     }
@@ -404,8 +421,10 @@
     }
 
     function checkWord() {
-        const wordIndex = correctWords.indexOf(typedWord);
-        if (wordIndex !== -1) {
+        const typedWordContainer = document.getElementById('typed-word');
+
+        if (correctWords.includes(typedWord)) {
+            const wordIndex = correctWords.indexOf(typedWord);
             const row = Math.floor(wordIndex / 2);
             const word = wordIndex % 2;
             const wordCells = document.querySelectorAll(`.cell[data-row="${row}"][data-word="${word}"]`);
@@ -415,10 +434,16 @@
                     cell.classList.add('green');
                 }
             });
+            resetTypedWord();
+        } else {
+            typedWordContainer.classList.add('shake');
+            setTimeout(() => {
+                typedWordContainer.classList.remove('shake');
+                resetTypedWord();
+            }, 300);
         }
-
-        resetTypedWord();
     }
+
 
     function resetTypedWord() {
         typedWord = '';

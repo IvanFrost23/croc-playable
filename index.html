@@ -507,22 +507,25 @@
                 return;
             }
 
-            animationElement.addEventListener('transitionend', () => {
-                animationElement.remove();
-
-                targetCell.textContent = letterElement.textContent;
-                targetCell.classList.add('green');
-                targetCell.style.opacity = '0';
-                targetCell.style.transform = 'scale(0.1)';
-                targetCell.style.transition = `opacity ${animationDuration}s ease, transform ${animationDuration}s ease`;
+            setTimeout(function () {
+                let animationElement2 = animationElement.cloneNode(true);
+                animationElement2.style.position = 'absolute';
+                animationElement2.style.left = `${endX}px`;
+                animationElement2.style.top = `${endY - 4}px`;
+                animationElement2.style.opacity = '0';
+                animationElement2.style.transform = 'scale(0.5)';
+                animationElement2.style.zIndex = '1000';
+                animationElement2.style.width = '50px';
+                animationElement2.style.height = '57px';
+                document.body.appendChild(animationElement2);
 
                 setTimeout(() => {
-                    targetCell.style.opacity = '1';
-                    targetCell.style.transform = 'scale(1)';
+                    animationElement2.style.opacity = '1';
+                   animationElement2.style.transform = 'scale(1)';
                 }, 100);
 
                 letterElement.remove();
-            });
+            }, delay * 1000 + 300);
         });
     }
 

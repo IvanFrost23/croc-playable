@@ -496,6 +496,7 @@
                 animationElement.style.left = `${endX}px`;
                 animationElement.style.top = `${endY}px`;
                 animationElement.style.transform = 'scale(1)';
+                letterElement.style.visibility = 'hidden';
                 setTimeout(() => {
                     animationElement.style.transform = 'scale(0.1)';
                     animationElement.style.opacity = '0';
@@ -515,16 +516,15 @@
                 targetCell.style.transform = 'scale(0.1)';
                 targetCell.style.transition = `opacity ${animationDuration}s ease, transform ${animationDuration}s ease`;
 
-
                 setTimeout(() => {
                     targetCell.style.opacity = '1';
                     targetCell.style.transform = 'scale(1)';
                 }, 100);
+
+                letterElement.remove();
             });
         });
     }
-
-
 
     function resetTypedWord() {
         typedWord = '';

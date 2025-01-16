@@ -243,6 +243,7 @@
 </div>
 
 <script>
+    var keypadBlocked = false;
     const gridData = [
         [["T", "E", "N"], ["A", "R", "T"]],
         [["R", "A", "T"], ["E", "A", "R"]],
@@ -351,6 +352,10 @@
     }
 
     function startDrag(letter) {
+        if (keypadBlocked) {
+            return;
+        }
+
         isDragging = true;
         draggedWord = letter;
         typedWordElement.textContent = draggedWord;
@@ -442,6 +447,7 @@
 
         if (correctWords.includes(typedWord)) {
             guessedWords.add(typedWord);
+            keypadBlocked = true;
             setTimeout(function () {
                 const gridCells = Array.from(document.querySelectorAll('.grid .cell'));
 
@@ -522,6 +528,7 @@
                 setTimeout(() => {
                     animationElement2.style.opacity = '1';
                     animationElement2.style.transform = 'scale(1)';
+                    keypadBlocked = false;
                 }, 100);
 
                 letterElement.remove();

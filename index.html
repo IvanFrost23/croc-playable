@@ -472,49 +472,58 @@
         const typedWordContainer = document.getElementById('typed-word');
         const letters = Array.from(typedWordContainer.children);
 
-        letters.forEach(function (letterElement, index) {
+        letters.forEach((letterElement, index) => {
             const targetCell = targetCells[index];
+
             const { left: startX, top: startY } = letterElement.getBoundingClientRect();
             const { left: endX, top: endY } = targetCell.getBoundingClientRect();
+            const animationDuration = 0.5;
+            const delay = index * animationDuration / letters.length;
+            const fadeOutStartTime = animationDuration * 0.6;
 
-            // Create the flying animation element
             const animationElement = letterElement.cloneNode(true);
             animationElement.style.position = 'absolute';
             animationElement.style.left = `${startX}px`;
             animationElement.style.top = `${startY}px`;
-            animationElement.style.transition = 'left 0.5s ease, top 0.5s ease, transform 0.5s ease, opacity 0.5s ease';
-            animationElement.style.transitionDelay = `${index * 0.1}s`;
+            animationElement.style.transform = 'scale(1)';
+            animationElement.style.opacity = '1';
+            animationElement.style.zIndex = '1000';
             document.body.appendChild(animationElement);
 
-            // Trigger the animation
+            animationElement.style.transition = `left ${animationDuration}s ease, top ${animationDuration}s ease, transform ${animationDuration}s ease, opacity ${animationDuration}s ease`;
+
             setTimeout(() => {
                 animationElement.style.left = `${endX}px`;
                 animationElement.style.top = `${endY}px`;
-                animationElement.style.transform = 'scale(0.5)';
-                animationElement.style.opacity = '0';
-                letterElement.remove();
-            }, 0);
+                animationElement.style.transform = 'scale(1)';
+                setTimeout(() => {
+                    animationElement.style.transform = 'scale(0.1)';
+                    animationElement.style.opacity = '0';
+                }, fadeOutStartTime * 1000);
+            }, delay * 1000);
+
+            if (targetCell.textContent.length > 0) {
+                return;
+            }
 
             animationElement.addEventListener('transitionend', () => {
                 animationElement.remove();
 
-                const guessedLetterElement = document.createElement('div');
-                guessedLetterElement.textContent = letterElement.textContent;
-                guessedLetterElement.style.opacity = '0';
-                guessedLetterElement.style.transform = 'scale(0.5)';
-                guessedLetterElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                targetCell.textContent = '';
-                targetCell.appendChild(guessedLetterElement);
+                targetCell.textContent = letterElement.textContent;
+                targetCell.classList.add('green');
+                targetCell.style.opacity = '0';
+                targetCell.style.transform = 'scale(0.1)';
+                targetCell.style.transition = `opacity ${animationDuration}s ease, transform ${animationDuration}s ease`;
+
 
                 setTimeout(() => {
-                    guessedLetterElement.style.opacity = '1';
-                    guessedLetterElement.style.transform = 'scale(1)';
-                }, 0);
-
-                targetCell.classList.add('green');
+                    targetCell.style.opacity = '1';
+                    targetCell.style.transform = 'scale(1)';
+                }, 100);
             });
         });
     }
+
 
 
     function resetTypedWord() {

@@ -109,8 +109,8 @@
         }
 
         .typed-cell {
-            width: 50px;
-            height: 57px;
+            width: 60px;
+            height: 68px;
             background: url('green_letter.png') no-repeat center center;
             background-size: cover;
             font-size: 36px;
@@ -477,28 +477,45 @@
             const { left: startX, top: startY } = letterElement.getBoundingClientRect();
             const { left: endX, top: endY } = targetCell.getBoundingClientRect();
 
+            // Create the flying animation element
             const animationElement = letterElement.cloneNode(true);
             animationElement.style.position = 'absolute';
             animationElement.style.left = `${startX}px`;
             animationElement.style.top = `${startY}px`;
-            animationElement.style.transition = 'transform 0.5s ease, left 0.5s ease, top 0.5s ease';
+            animationElement.style.transition = 'left 0.5s ease, top 0.5s ease, transform 0.5s ease, opacity 0.5s ease';
             animationElement.style.transitionDelay = `${index * 0.1}s`;
             document.body.appendChild(animationElement);
 
+            // Trigger the animation
             setTimeout(() => {
                 animationElement.style.left = `${endX}px`;
                 animationElement.style.top = `${endY}px`;
-                animationElement.style.transform = 'scale(1.2)';
+                animationElement.style.transform = 'scale(0.5)';
+                animationElement.style.opacity = '0';
                 letterElement.remove();
             }, 0);
 
             animationElement.addEventListener('transitionend', () => {
                 animationElement.remove();
-                targetCell.textContent = letterElement.textContent;
+
+                const guessedLetterElement = document.createElement('div');
+                guessedLetterElement.textContent = letterElement.textContent;
+                guessedLetterElement.style.opacity = '0';
+                guessedLetterElement.style.transform = 'scale(0.5)';
+                guessedLetterElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                targetCell.textContent = '';
+                targetCell.appendChild(guessedLetterElement);
+
+                setTimeout(() => {
+                    guessedLetterElement.style.opacity = '1';
+                    guessedLetterElement.style.transform = 'scale(1)';
+                }, 0);
+
                 targetCell.classList.add('green');
             });
         });
     }
+
 
     function resetTypedWord() {
         typedWord = '';

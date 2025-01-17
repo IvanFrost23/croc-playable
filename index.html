@@ -273,6 +273,7 @@
     const canvas = document.getElementById('keypad-canvas');
     const ctx = canvas.getContext('2d');
     const gameContainer = document.getElementById('game-container');
+    let moves = 0;
 
     canvas.width = 300;
     canvas.height = 300;
@@ -352,6 +353,8 @@
     }
 
     function startDrag(letter) {
+        checkMoves();
+
         if (keypadBlocked) {
             return;
         }
@@ -361,7 +364,16 @@
         typedWordElement.textContent = draggedWord;
         draggedLetters = [letter];
 
+        moves++;
+
         updateTypedWordDisplay();
+    }
+
+    function checkMoves() {
+        if (moves >= 4) {
+            alert("GAME OVER!");
+            keypadBlocked = true;
+        }
     }
 
     function updateTypedWordDisplay() {

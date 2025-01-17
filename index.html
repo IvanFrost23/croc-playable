@@ -494,8 +494,7 @@
 
             setTimeout(() => {
                 animationElement.style.left = `${endX}px`;
-                animationElement.style.top = `${endY - 3}px`;
-                animationElement.style.transform = 'scale(1)';
+                animationElement.style.top = `${endY - (index !== 0 ? 3 : 0)}px`;
                 letterElement.remove();
             }, 0);
 

@@ -524,7 +524,7 @@
                 animationElement.style.top = `${endY - (index !== 0 ? 3 : 0)}px`;
                 // Исходный элемент больше не нужен
                 letterElement.remove();
-            }, 0);
+            }, 100);
 
             // После завершения полёта — удаляем clone и записываем букву в ячейку
             setTimeout(() => {

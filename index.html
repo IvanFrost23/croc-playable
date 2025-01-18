@@ -516,11 +516,11 @@
             animationElement.style.transitionDelay = `${index * 0.1}s`;
             gameContainer.appendChild(animationElement);
 
-            requestAnimationFrame(() => {
+            setTimeout(() => {
                 animationElement.style.left = `${endX}px`;
                 animationElement.style.top = `${endY - (index !== 0 ? 3 : 0)}px`;
                 letterElement.remove();
-            });
+            }, 10);
 
             setTimeout(() => {
                 animationElement.remove();

@@ -508,7 +508,6 @@
             const endX = (targetRect.left - containerRect.left + window.scrollX) / scaleFactor;
             const endY = (targetRect.top - containerRect.top + window.scrollY) / scaleFactor;
 
-            // Кладём клон в общий контейнер
             const animationElement = letterElement.cloneNode(true);
             animationElement.style.position = 'absolute';
             animationElement.style.left = `${startX}px`;
@@ -517,20 +516,16 @@
             animationElement.style.transitionDelay = `${index * 0.1}s`;
             gameContainer.appendChild(animationElement);
 
-            // Анимируем полёт
             setTimeout(() => {
                 animationElement.style.left = `${endX}px`;
-                // Чуть поднимаем букву, как у вас было:
                 animationElement.style.top = `${endY - (index !== 0 ? 3 : 0)}px`;
-                // Исходный элемент больше не нужен
                 letterElement.remove();
-            }, 100);
+            }, 10);
 
-            // После завершения полёта — удаляем clone и записываем букву в ячейку
             setTimeout(() => {
                 animationElement.remove();
                 targetCell.textContent = letterElement.textContent;
-                keypadBlocked = false; // Разблокируем клавиатуру
+                keypadBlocked = false;
                 targetCell.classList.add('green');
             }, index * 100 + 500);
         });

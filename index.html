@@ -94,10 +94,15 @@
             font-weight: bold;
             color: #333;
             text-align: center;
-            line-height: 40px;
-            align-items: center;
             display: flex;
             justify-content: center;
+            align-items: center;
+        }
+
+        .cell span {
+            display: inline-block;
+            line-height: 1;
+            transform: translateY(-2px);
         }
 
         .cell.green {
@@ -292,7 +297,7 @@
                     cellElement.dataset.index = index;
 
                     if (index === 0) {
-                        cellElement.textContent = letter;
+                        cellElement.innerHTML = `<span>${letter}</span>`;
                         cellElement.classList.add('green');
                     }
                     wordContainer.appendChild(cellElement);
@@ -383,7 +388,8 @@
         draggedWord.split('').forEach((letter, index) => {
             const letterBlock = document.createElement('div');
             letterBlock.classList.add('typed-cell');
-            letterBlock.textContent = letter;
+            letterBlock.innerHTML = `<span>${letter}</span>`;
+
 
             if (index === draggedWord.length - 1) {
                 letterBlock.classList.add('appear');
@@ -524,7 +530,7 @@
 
             setTimeout(() => {
                 animationElement.remove();
-                targetCell.textContent = letterElement.textContent;
+                targetCell.innerHTML = `<span>${letterElement.textContent}</span>`;
                 keypadBlocked = false;
                 targetCell.classList.add('green');
             }, index * 100 + 500);

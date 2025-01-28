@@ -6,37 +6,33 @@ const rename = require('gulp-rename');
 const base64 = require('gulp-base64');
 const path = require('path');
 
-// Задача: Минификация JS, инлайнинг и минификация HTML
 gulp.task('inline-and-minify', function () {
-    // Минифицируем JS-файлы отдельно
-    gulp.src('src/js/**/*.js') // Все JS-файлы
-        .pipe(uglify()) // Минификация JS
-        .pipe(gulp.dest('docs/js')); // Сохраняем минифицированные файлы
+    gulp.src('src/js/**/*.js')
+        .pipe(uglify())
+        .pipe(gulp.dest('docs/js'));
 
-    // Далее обрабатываем HTML и инлайним все файлы
-    return gulp.src('src/index.html') // Исходный HTML
+    return gulp.src('src/index.html')
         .pipe(base64({
-            maxImageSize: 3000 * 1024, // Лимит на 10 KB (можно менять)
-            baseDir: path.join(__dirname, 'src'), // Папка с исходниками
-            debug: true // Включить вывод информации о процессе
-        })) // Инлайн изображений в Base64
+            maxImageSize: 3000 * 1024,
+            baseDir: path.join(__dirname, 'src'),
+            debug: true
+        }))
         .pipe(
             inline({
-                base: 'src/', // Базовый путь для ресурсов (изображений, скриптов и т.д.)
-                ignore: [], // Не игнорируем ничего
+                base: 'src/',
+                ignore: [],
                 css: true
             })
         )
         .pipe(
             htmlmin({
-                collapseWhitespace: true, // Удаление пробелов и переносов строк
-                removeComments: true, // Удаление комментариев
-                minifyJS: true, // Минификация встроенного JS
-                minifyCSS: true // Минификация встроенного CSS
+                collapseWhitespace: true,
+                removeComments: true,
+                minifyJS: true,
+                minifyCSS: true
             })
         )
-        .pipe(gulp.dest('docs/')); // Сохраняем итоговый HTML в папку docs
+        .pipe(gulp.dest('docs/'));
 });
 
-// Задача по умолчанию
 gulp.task('default', gulp.series('inline-and-minify'));

@@ -11,7 +11,7 @@ gulp.task('inline-and-minify', function () {
     // Минифицируем JS-файлы отдельно
     gulp.src('src/js/**/*.js') // Все JS-файлы
         .pipe(uglify()) // Минификация JS
-        .pipe(gulp.dest('dist/js')); // Сохраняем минифицированные файлы
+        .pipe(gulp.dest('docs/js')); // Сохраняем минифицированные файлы
 
     // Далее обрабатываем HTML и инлайним все файлы
     return gulp.src('src/index.html') // Исходный HTML
@@ -35,7 +35,7 @@ gulp.task('inline-and-minify', function () {
                 minifyCSS: true // Минификация встроенного CSS
             })
         )
-        .pipe(gulp.dest('dist/')); // Сохраняем итоговый HTML в папку dist
+        .pipe(gulp.dest('docs/')); // Сохраняем итоговый HTML в папку docs
 });
 
 // Задача по умолчанию

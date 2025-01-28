@@ -212,28 +212,26 @@ function clearLines() {
 function addCoins(amount) {
     coinCount += amount;
 
-    const deltaElement = document.createElement('div');
-    deltaElement.textContent = `+${amount}`;
+    var deltaElement = document.createElement('div');
+    deltaElement.textContent = "+" + amount;
     deltaElement.classList.add('coin-delta');
 
-    const rect = coinCountElement.getBoundingClientRect();
-    deltaElement.style.left = `${rect.left + 10}px`;
-    deltaElement.style.top = `${rect.bottom + 10}px`;
+    var rect = coinCountElement.getBoundingClientRect();
+    deltaElement.style.left = (rect.left + 10) + "px";
+    deltaElement.style.top = (rect.bottom + 10) + "px";
 
     document.body.appendChild(deltaElement);
 
-    setTimeout(() => {
+    setTimeout(function () {
         deltaElement.style.transform = 'translateY(-50px)';
         deltaElement.style.opacity = '0';
     }, 10);
 
     coinCountElement.textContent = coinCount;
-    setTimeout(() => {
+    setTimeout(function () {
         deltaElement.remove();
     }, 1000);
 }
-
-
 
 var guessedWords = new Set();
 function checkWord() {

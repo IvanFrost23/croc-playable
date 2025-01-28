@@ -209,6 +209,25 @@ function clearLines() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function addCoins(amount) {
+    coinCount += amount;
+
+    var coinElement = document.createElement('div');
+    coinElement.textContent = `+${amount}`;
+    coinElement.classList.add('coin-animation');
+    gameContainer.appendChild(coinElement);
+
+    setTimeout(function () {
+        coinElement.style.opacity = 0;
+        coinElement.style.transform = 'translateY(-50px)';
+    }, 10);
+
+    setTimeout(function () {
+        coinElement.remove();
+        coinCountElement.textContent = coinCount;
+    }, 500);
+}
+
 var guessedWords = new Set();
 function checkWord() {
     var typedWordContainer = document.getElementById('typed-word');
@@ -221,6 +240,9 @@ function checkWord() {
     if (correctWords.indexOf(typedWord) !== -1) {
         guessedWords.add(typedWord);
         keypadBlocked = true;
+
+        addCoins(10);
+
         setTimeout(function () {
             var gridCells = Array.from(document.querySelectorAll('.grid .cell'));
 

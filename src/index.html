@@ -59,6 +59,9 @@
             height: 50px;
             margin-right: 0;
             transform: translateX(-20px);
+            background-image: url('images/coin.png');
+            background-size: cover;
+            background-position: center;
         }
 
         #coin-count {
@@ -235,7 +238,7 @@
 
 <div id="game-container">
     <div id="coin-container">
-        <img src="images/coin.png" alt="Coin" id="coin-icon">
+        <div id="coin-icon"></div>
         <span id="coin-count">300</span>
     </div>
     <div class="grid" id="grid"></div>

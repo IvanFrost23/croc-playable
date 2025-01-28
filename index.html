@@ -250,24 +250,24 @@
 <script>
     var keypadBlocked = false;
     const gridData = [
-        [["T", "E", "N"], ["A", "R", "T"]],
-        [["R", "A", "T"], ["E", "A", "R"]],
-        [["R", "E", "A", "L"], ["R", "E", "N", "T"]],
-        [["S", "T", "E", "R", "N"], ["L", "E", "A", "S", "T"]],
-        [["A", "L", "E", "R", "T"], ["T", "E", "A", "R", "S"]],
-        [["S", "N", "A", "R", "E"], ["R", "A", "T", "E", "S"]],
-        [["A", "S", "T", "E", "R"], ["S", "L", "A", "N", "T"]],
-        [["L", "E", "A", "R", "N"], ["S", "T", "E", "A", "L"]],
+        [["A", "C", "T"], ["C", "U", "T"]],
+        [["C", "U", "E"], ["A", "C", "E"]],
+        [["F", "A", "T"], ["E", "A", "T"]],
+        [["T", "E", "A"], ["C", "A", "T"]],
+        [["C", "U", "T", "E"], ["C", "A", "F", "E"]],
+        [["F", "E", "A", "T"], ["F", "A", "C", "T"]],
+        [["F", "A", "C", "E"], ["F", "A", "T", "E"]],
+        [["F", "A", "C", "E", "T"], ["A", "C", "U", "T", "E"]],
     ];
 
     const correctWords = [
-        "TEN", "ART", "RAT", "EAR",
-        "REAL", "RENT", "STERN", "LEAST",
-        "ALERT", "TEARS", "SNARE", "RATES",
-        "ASTER", "SLANT", "LEARN", "STEAL"
+        "ACT", "CUT", "CUE", "ACE",
+        "FAT", "EAT", "TEA", "CAT",
+        "CUTE", "CAFE", "FEAT", "FACT",
+        "FACE", "FATE", "FACET", "ACUTE"
     ];
 
-    const availableLetters = ['A', 'E', 'T', 'S', 'N', 'R', 'L'];
+    const availableLetters = ['E', 'T', 'F', 'A', 'C', 'U'];
     let typedWord = '';
     const coinCountElement = document.getElementById('coin-count');
     let coinCount = parseInt(coinCountElement.textContent, 10);
@@ -503,12 +503,10 @@
             const gameContainer = document.getElementById('game-container');
             const scaleFactor = getScaleFactor(gameContainer);
 
-            // Координаты буквы, ячейки и общего контейнера
             const letterRect = letterElement.getBoundingClientRect();
             const targetRect = targetCell.getBoundingClientRect();
             const containerRect = gameContainer.getBoundingClientRect();
 
-            // Начальные и конечные координаты в системе gameContainer с учетом прокрутки
             const startX = (letterRect.left - containerRect.left + window.scrollX) / scaleFactor;
             const startY = (letterRect.top - containerRect.top + window.scrollY) / scaleFactor;
             const endX = (targetRect.left - containerRect.left + window.scrollX) / scaleFactor;
@@ -539,7 +537,7 @@
 
     function getScaleFactor(element) {
         const transform = element.style.transform;
-        if (!transform) return 1; // Масштабирование не применено
+        if (!transform) return 1;
 
         const match = transform.match(/scale\(([^)]+)\)/);
         if (!match) return 1;

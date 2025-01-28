@@ -1,6 +1,7 @@
 /croc playable.zip
 /temp/index.html
 /dist/js/script.js
+/node_modules
 /node_modules/.bin/tldts
 /node_modules/.bin/uuid
 /node_modules/asn1/lib/ber/errors.js
@@ -439,3 +440,4 @@
 /node_modules/.package-lock.json
 /package.json
 /package-lock.json
+/node_modules/

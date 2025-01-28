@@ -215,6 +215,21 @@
             pointer-events: none;
         }
 
+        .coin-delta {
+            position: absolute;
+            font-size: 18px;
+            font-weight: bold;
+            color: black;
+            opacity: 1;
+            transform: translateY(0);
+            transition: transform 1s ease, opacity 1s ease; /* Анимация движения вверх и исчезновения */
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+
+
+
         #keypad-canvas {
             position: absolute;
             top: 0;

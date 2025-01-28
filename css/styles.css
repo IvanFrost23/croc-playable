@@ -34,9 +34,10 @@ body {
 }
 
 #coin-container {
-    position: absolute;
+    position: fixed;
     top: 20px;
     left: 20px;
+    transform-origin: top left;
     width: 120px;
     height: 30px;
     background: url('../images/menubar_bg.png') no-repeat center center;

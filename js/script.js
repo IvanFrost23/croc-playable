@@ -359,6 +359,11 @@ function resizeGame() {
 
     gameContainer.style.left = (viewportWidth - scaledWidth) / 2 + 'px';
     gameContainer.style.top = (viewportHeight - scaledHeight) / 2 + 'px';
+
+    var coinContainer = document.getElementById('coin-container');
+    coinContainer.style.transform = 'scale(' + scaleFactor + ')';
+    coinContainer.style.left = (20 * scaleFactor) + 'px'; // 20 пикселей от левого края
+    coinContainer.style.top = (20 * scaleFactor) + 'px'; // 20 пикселей от верхнего края
 }
 
 window.addEventListener('resize', resizeGame);

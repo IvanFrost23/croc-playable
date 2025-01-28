@@ -217,13 +217,13 @@ function addCoins(amount) {
     deltaElement.classList.add('coin-delta');
 
     var rect = coinCountElement.getBoundingClientRect();
-    deltaElement.style.left = (rect.left + 10) + "px";
+    deltaElement.style.left = (rect.left) + "px";
     deltaElement.style.top = (rect.bottom + 10) + "px";
 
     document.body.appendChild(deltaElement);
 
     setTimeout(function () {
-        deltaElement.style.transform = 'translateY(-50px)';
+        deltaElement.style.transform = 'translateY(-10px)';
         deltaElement.style.opacity = '0';
     }, 10);
 

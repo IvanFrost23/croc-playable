@@ -211,12 +211,12 @@ body {
 
 .coin-delta {
     position: absolute;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
-    color: black;
+    color: white;
     opacity: 1;
     transform: translateY(0);
-    transition: transform 1s ease, opacity 1s ease; /* Анимация движения вверх и исчезновения */
+    transition: transform 1s ease, opacity 1s ease;
     pointer-events: none;
     z-index: 1000;
 }

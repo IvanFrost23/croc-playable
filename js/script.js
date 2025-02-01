@@ -99,10 +99,10 @@ function initLetters() {
         });
         letterElement.addEventListener('touchmove', function (e) {
             var touch = e.touches[0];
-            var letterElement = document.elementFromPoint(touch.clientX, touch.clientY);
-            if (letterElement && letterElement.classList.contains('letter')) {
-                var letter = letterElement.dataset.letter;
-                dragOver(letter, e);
+            var letterEl = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (letterEl && letterEl.classList.contains('letter')) {
+                var overLetter = letterEl.dataset.letter;
+                dragOver(overLetter, e);
             }
         });
 
@@ -115,10 +115,7 @@ function initLetters() {
 
 function startDrag(letter) {
     checkMoves();
-
-    if (keypadBlocked) {
-        return;
-    }
+    if (keypadBlocked) return;
 
     isDragging = true;
     draggedWord = letter;
@@ -126,13 +123,12 @@ function startDrag(letter) {
     draggedLetters = [letter];
 
     moves++;
-
     updateTypedWordDisplay();
 }
 
 function checkMoves() {
     if (moves >= 4) {
-        alert("GAME OVER!");
+        openStore();
         keypadBlocked = true;
     }
 }
@@ -276,13 +272,10 @@ function checkWord() {
 
 function animateCorrectWord(targetCells) {
     var typedWordContainer = document.getElementById('typed-word');
-    var gameContainer = document.getElementById('game-container');
     var letters = Array.from(typedWordContainer.children);
 
     letters.forEach(function (letterElement, index) {
         var targetCell = targetCells[index];
-
-        var gameContainer = document.getElementById('game-container');
         var scaleFactor = getScaleFactor(gameContainer);
 
         var letterRect = letterElement.getBoundingClientRect();
@@ -335,17 +328,12 @@ function resetTypedWord() {
     clickedLetters = [];
 }
 
-initGrid();
-initLetters();
-
 function resizeGame() {
-    var gameContainer = document.getElementById('game-container');
     var widthToHeightRatio = 600 / 931;
     var viewportWidth = window.innerWidth;
     var viewportHeight = window.innerHeight;
 
     var scaleFactor;
-
     if (viewportWidth / viewportHeight < widthToHeightRatio) {
         scaleFactor = viewportWidth / 600;
     } else {
@@ -362,9 +350,16 @@ function resizeGame() {
 
     var coinContainer = document.getElementById('coin-container');
     coinContainer.style.transform = 'scale(' + scaleFactor + ')';
-    coinContainer.style.left = (20 * scaleFactor) + 'px'; // 20 пикселей от левого края
-    coinContainer.style.top = (20 * scaleFactor) + 'px'; // 20 пикселей от верхнего края
+    coinContainer.style.left = (20 * scaleFactor) + 'px';
+    coinContainer.style.top = (20 * scaleFactor) + 'px';
 }
 
-window.addEventListener('resize', resizeGame);
-window.addEventListener('load', resizeGame);
+function startGame() {
+    initGrid();
+    initLetters();
+    resizeGame();
+    window.addEventListener('resize', resizeGame);
+    window.addEventListener('load', resizeGame);
+}
+
+window.startGame = startGame;

@@ -207,15 +207,19 @@ function clearLines() {
 function addCoins(amount) {
     coinCount += amount;
 
+    var coinContainer = document.getElementById('coin-container');
+    var coinCountElement = document.getElementById('coin-count');
+
     var deltaElement = document.createElement('div');
     deltaElement.textContent = "+" + amount;
     deltaElement.classList.add('coin-delta');
 
-    var rect = coinCountElement.getBoundingClientRect();
-    deltaElement.style.left = (rect.left) + "px";
-    deltaElement.style.top = (rect.bottom + 10) + "px";
+    var left = coinCountElement.offsetLeft;
+    var top = coinCountElement.offsetTop + coinCountElement.offsetHeight;
+    deltaElement.style.left = left + "px";
+    deltaElement.style.top = (top + 10) + "px";
 
-    document.body.appendChild(deltaElement);
+    coinContainer.appendChild(deltaElement);
 
     setTimeout(function () {
         deltaElement.style.transform = 'translateY(-10px)';
@@ -223,6 +227,7 @@ function addCoins(amount) {
     }, 10);
 
     coinCountElement.textContent = coinCount;
+
     setTimeout(function () {
         deltaElement.remove();
     }, 1000);

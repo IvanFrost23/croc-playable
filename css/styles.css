@@ -53,6 +53,7 @@ body {
     align-items: center;
     justify-content: left;
     padding: 10px;
+    z-index: 1000;
 }
 
 #coin-icon {

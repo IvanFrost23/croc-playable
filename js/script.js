@@ -122,7 +122,6 @@ function startDrag(letter) {
     typedWordElement.textContent = draggedWord;
     draggedLetters = [letter];
 
-    moves++;
     updateTypedWordDisplay();
 }
 
@@ -241,6 +240,7 @@ function checkWord() {
     if (correctWords.indexOf(typedWord) !== -1) {
         guessedWords.add(typedWord);
         keypadBlocked = true;
+        moves++;
 
         addCoins(10);
 
@@ -355,6 +355,8 @@ function resizeGame() {
 }
 
 function startGame() {
+    window.gameStarted = true;
+
     initGrid();
     initLetters();
     resizeGame();

@@ -247,8 +247,6 @@ function checkWord() {
         keypadBlocked = true;
         moves++;
 
-        addCoins(10);
-
         setTimeout(function () {
             var gridCells = Array.from(document.querySelectorAll('.grid .cell'));
 
@@ -261,6 +259,7 @@ function checkWord() {
             }
 
             animateCorrectWord(gridCells.slice(startIndex, startIndex + typedWord.length));
+            addCoins(10);
         }, 300);
     } else {
         var crossImage = document.createElement('div');

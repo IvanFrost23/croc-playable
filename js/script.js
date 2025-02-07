@@ -127,7 +127,7 @@ function startDrag(letter) {
 
 function checkMoves() {
     if (moves >= 4) {
-        openStore();
+        onCTAClick();
         keypadBlocked = true;
     }
 }

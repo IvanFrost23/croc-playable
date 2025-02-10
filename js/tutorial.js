@@ -1,20 +1,20 @@
 (function () {
-    // Флаг, указывающий, что туториал запущен.
+    // Flag indicating that the tutorial is active.
     var tutorialActive = false;
     var tutorialFinger = null;
-    var tutorialTimeout; // для циклических задержек
-    // Здесь можно задать любое слово для демонстрации (например, "CAT", "ACT" и т.д.)
+    var tutorialTimeout; // For cyclic delays
+    // You can change the tutorial word as needed (e.g., "CAT", "ACT", etc.)
     var tutorialWord = "CAT";
 
-    // Функция возвращает позицию центра буквы.
-    // Если глобальный объект letterPositions уже определён (из initLetters игры), используем его.
+    // Returns the center position of a letter.
+    // If the global object letterPositions (set in initLetters) exists, use it.
     function getLetterPosition(letter) {
         if (window.letterPositions && window.letterPositions[letter]) {
             return window.letterPositions[letter];
         }
-        // Фолбэк: рассчитываем аналогично, добавляя фиксированный отступ 35, как в основном коде.
+        // Fallback: calculate similar to the main game code, adding a fixed offset of 35.
         var letterEl = document.querySelector(".letter[data-letter='" + letter + "']");
-        var keypad = document.querySelector('.keypad'); // используем контейнер с клавишами
+        var keypad = document.querySelector('.keypad'); // Using the keypad container
         if (letterEl && keypad) {
             var letterRect = letterEl.getBoundingClientRect();
             var keypadRect = keypad.getBoundingClientRect();
@@ -26,79 +26,88 @@
         return { x: 0, y: 0 };
     }
 
-    // Функция для отрисовки линии и кружков между набранными буквами.
+    // Draws the line and circles between the letters.
     function drawTutorialLine(positions) {
         var canvas = document.getElementById('keypad-canvas');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');
-        // Очищаем канвас перед отрисовкой
+        // Clear the canvas before drawing
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (positions.length === 0) return;
 
-        // Рисуем кружки для каждой позиции (радиус 30, как в основном коде)
-        positions.forEach(function(pos) {
+        // Draw circles at each position (radius 30, as in the main game)
+        positions.forEach(function (pos) {
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, 30, 0, 2 * Math.PI);
             ctx.fillStyle = 'rgba(140, 50, 187, 0.8)';
             ctx.fill();
         });
 
-        // Рисуем линии между последовательными позициями
+        // Draw connecting lines between consecutive positions
         for (var i = 0; i < positions.length - 1; i++) {
             ctx.beginPath();
             ctx.moveTo(positions[i].x, positions[i].y);
-            ctx.lineTo(positions[i+1].x, positions[i+1].y);
+            ctx.lineTo(positions[i + 1].x, positions[i + 1].y);
             ctx.strokeStyle = 'rgba(140, 50, 187, 0.8)';
             ctx.lineWidth = 15;
             ctx.stroke();
         }
     }
 
-    // Рекурсивная функция для анимации прохождения по буквам tutorialWord.
+    // Recursively animates the tutorial sequence.
     function animateTutorialSequence(letters, index, positions) {
         if (!tutorialActive) return;
         if (index >= letters.length) {
-            // После завершения последовательности запускаем эффект fade-out для линий и кружков.
+            // End of sequence: fade out the canvas and the finger.
             var canvas = document.getElementById('keypad-canvas');
-            // Устанавливаем transition для плавного исчезновения
+            var ctx = canvas.getContext('2d');
             canvas.style.transition = 'opacity 0.5s ease-out';
             canvas.style.opacity = 0;
-            tutorialTimeout = setTimeout(function() {
-                var ctx = canvas.getContext('2d');
+            if (tutorialFinger) {
+                tutorialFinger.style.transition = 'opacity 0.5s ease-out';
+                tutorialFinger.style.opacity = 0;
+            }
+            tutorialTimeout = setTimeout(function () {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Сбрасываем opacity для следующего цикла
                 canvas.style.opacity = 1;
+                if (tutorialFinger) {
+                    tutorialFinger.style.opacity = 1;
+                }
                 runTutorialLoop();
-            }, 500); // длительность fade-out
+            }, 500);
             return;
         }
         var letter = letters[index];
         var pos = getLetterPosition(letter);
-        positions.push(pos);
-        // Отрисовываем линию и кружки с учётом новой буквы
-        drawTutorialLine(positions);
 
-        // Позиционируем изображение пальца точно в центре буквы (без смещения)
+        // Move the finger to the new letter's position.
         tutorialFinger.style.left = pos.x + 'px';
         tutorialFinger.style.top = pos.y + 'px';
 
-        // Добавляем эффект «тапа» (убедитесь, что CSS‑класс .tap определён)
-        tutorialFinger.classList.add('tap');
-        setTimeout(function(){
-            tutorialFinger.classList.remove('tap');
-            // Через 400 мс переходим к следующей букве
-            setTimeout(function() {
-                animateTutorialSequence(letters, index + 1, positions);
-            }, 400);
-        }, 300);
+        // Wait 500ms for the finger's transition to finish.
+        setTimeout(function () {
+            positions.push(pos);
+            drawTutorialLine(positions);
+
+            // Add a tap effect (ensure the CSS class .tap is defined).
+            tutorialFinger.classList.add('tap');
+            // Shorten the tap duration to reduce pauses.
+            setTimeout(function () {
+                tutorialFinger.classList.remove('tap');
+                // After a short 150ms delay, proceed to the next letter.
+                setTimeout(function () {
+                    animateTutorialSequence(letters, index + 1, positions);
+                }, 150);
+            }, 150);
+        }, 500);
     }
 
-    // Основной цикл туториала.
+    // The main tutorial loop.
     function runTutorialLoop() {
         if (!tutorialActive) return;
-        var keypad = document.querySelector('.keypad'); // контейнер с клавишами
+        var keypad = document.querySelector('.keypad');
 
-        // Если изображение пальца ещё не создано, добавляем его в контейнер .keypad
+        // Create the finger image if it doesn't exist and add it to the keypad container.
         if (!tutorialFinger) {
             tutorialFinger = document.createElement('img');
             tutorialFinger.src = 'images/finger.png';
@@ -108,26 +117,29 @@
             tutorialFinger.style.height = '127px';
             tutorialFinger.style.pointerEvents = 'none';
             tutorialFinger.style.zIndex = '1000';
+            // The finger's movement transition (0.5s) is defined here.
             tutorialFinger.style.transition = 'left 0.5s ease, top 0.5s ease';
             keypad.appendChild(tutorialFinger);
         }
 
-        // Очищаем канвас перед запуском анимации
+        // Reset the canvas and finger opacity before starting.
         var canvas = document.getElementById('keypad-canvas');
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Обязательно сбрасываем opacity (если fade-out применялся в предыдущем цикле)
         canvas.style.opacity = 1;
+        if (tutorialFinger) {
+            tutorialFinger.style.opacity = 1;
+        }
 
         var letters = tutorialWord.split('');
         animateTutorialSequence(letters, 0, []);
     }
 
-    // Функция запуска туториала.
+    // Starts the tutorial.
     function startTutorial() {
         tutorialActive = true;
 
-        // Если пользователь начинает взаимодействовать с игрой, туториал отменяется.
+        // Cancel the tutorial if the user interacts with the game.
         var gameContainer = document.getElementById('game-container');
         gameContainer.addEventListener('mousedown', cancelTutorial);
         gameContainer.addEventListener('touchstart', cancelTutorial);
@@ -135,7 +147,7 @@
         runTutorialLoop();
     }
 
-    // Функция отмены туториала: очищаем таймауты, удаляем "палец" и очищаем канвас.
+    // Cancels the tutorial: clears timeouts, removes the finger image, and clears the canvas.
     function cancelTutorial() {
         tutorialActive = false;
         if (tutorialTimeout) {
@@ -153,6 +165,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    // Экспортируем функцию запуска туториала в глобальную область.
+    // Expose startTutorial to the global scope.
     window.startTutorial = startTutorial;
 })();

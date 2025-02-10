@@ -58,13 +58,18 @@
     function animateTutorialSequence(letters, index, positions) {
         if (!tutorialActive) return;
         if (index >= letters.length) {
-            // После завершения последовательности – подождать 1000 мс, затем очистить канвас и перезапустить цикл.
+            // После завершения последовательности запускаем эффект fade-out для линий и кружков.
+            var canvas = document.getElementById('keypad-canvas');
+            // Устанавливаем transition для плавного исчезновения
+            canvas.style.transition = 'opacity 0.5s ease-out';
+            canvas.style.opacity = 0;
             tutorialTimeout = setTimeout(function() {
-                var canvas = document.getElementById('keypad-canvas');
                 var ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Сбрасываем opacity для следующего цикла
+                canvas.style.opacity = 1;
                 runTutorialLoop();
-            }, 1000);
+            }, 500); // длительность fade-out
             return;
         }
         var letter = letters[index];
@@ -111,6 +116,8 @@
         var canvas = document.getElementById('keypad-canvas');
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Обязательно сбрасываем opacity (если fade-out применялся в предыдущем цикле)
+        canvas.style.opacity = 1;
 
         var letters = tutorialWord.split('');
         animateTutorialSequence(letters, 0, []);
@@ -128,7 +135,7 @@
         runTutorialLoop();
     }
 
-    // Функция отмены туториала: очищаем таймауты, удаляем "палец" и канвас.
+    // Функция отмены туториала: очищаем таймауты, удаляем "палец" и очищаем канвас.
     function cancelTutorial() {
         tutorialActive = false;
         if (tutorialTimeout) {

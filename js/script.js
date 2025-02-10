@@ -117,6 +117,8 @@ function startDrag(letter) {
     checkMoves();
     if (keypadBlocked) return;
 
+    finishTutorial();
+
     isDragging = true;
     draggedWord = letter;
     typedWordElement.textContent = draggedWord;

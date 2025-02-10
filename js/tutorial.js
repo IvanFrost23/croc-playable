@@ -75,7 +75,6 @@ function animateTutorialSequence(letters, index, positions) {
     var letter = letters[index];
     var pos = getLetterPosition(letter);
 
-
     tutorialFinger.style.transition = 'left 0.5s ease, top 0.5s ease';
     tutorialFinger.offsetHeight;
     tutorialFinger.style.left = pos.x + 'px';
@@ -113,15 +112,20 @@ function runTutorialLoop() {
         keypad.appendChild(tutorialFinger);
     }
 
+    var letters = tutorialWord.split('');
+    var startPos = getLetterPosition(letters[0]);
+    tutorialFinger.style.transition = 'none';
+    tutorialFinger.style.left = startPos.x + 'px';
+    tutorialFinger.style.top = startPos.y + 'px';
+    tutorialFinger.offsetHeight;
+    tutorialFinger.style.transition = 'left 0.5s ease, top 0.5s ease';
+
     var canvas = document.getElementById('keypad-canvas');
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.style.opacity = 1;
-    if (tutorialFinger) {
-        tutorialFinger.style.opacity = 1;
-    }
+    tutorialFinger.style.opacity = 1;
 
-    var letters = tutorialWord.split('');
     animateTutorialSequence(letters, 0, []);
 }
 

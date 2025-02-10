@@ -255,3 +255,14 @@ body {
         transform: scale(0.5);
     }
 }
+
+#tutorial-finger {
+    background: url('../images/finger.png') no-repeat center center;
+    background-size: contain;
+    width: 100px;
+    height: 127px;
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    transition: left 0.5s ease, top 0.5s ease;
+}

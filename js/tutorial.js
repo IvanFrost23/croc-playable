@@ -93,15 +93,9 @@ function runTutorialLoop() {
     var keypad = document.querySelector('.keypad');
 
     if (!tutorialFinger) {
-        tutorialFinger = document.createElement('img');
-        tutorialFinger.src = 'images/finger.png';
+        tutorialFinger = document.createElement('div');
         tutorialFinger.id = 'tutorial-finger';
         tutorialFinger.style.position = 'absolute';
-        tutorialFinger.style.width = '100px';
-        tutorialFinger.style.height = '127px';
-        tutorialFinger.style.pointerEvents = 'none';
-        tutorialFinger.style.zIndex = '1000';
-
         tutorialFinger.style.transition = 'left 0.5s ease, top 0.5s ease';
         keypad.appendChild(tutorialFinger);
     }

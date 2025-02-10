@@ -4,7 +4,7 @@
     var tutorialFinger = null;
     var tutorialTimeout; // For cyclic delays
     // You can change the tutorial word as needed (e.g., "CAT", "ACT", etc.)
-    var tutorialWord = "CAT";
+    var tutorialWord = "CUTE";
 
     // Returns the center position of a letter.
     // If the global object letterPositions (set in initLetters) exists, use it.
@@ -81,6 +81,12 @@
         var pos = getLetterPosition(letter);
 
         // Move the finger to the new letter's position.
+        tutorialFinger.style.transition = 'left 0.5s ease, top 0.5s ease';
+
+// Force reflow to ensure the transition applies
+        tutorialFinger.offsetHeight; // This forces a reflow
+
+// Move the finger to the new letter's position
         tutorialFinger.style.left = pos.x + 'px';
         tutorialFinger.style.top = pos.y + 'px';
 
@@ -99,7 +105,7 @@
                     animateTutorialSequence(letters, index + 1, positions);
                 }, 150);
             }, 150);
-        }, 500);
+        }, 250);
     }
 
     // The main tutorial loop.

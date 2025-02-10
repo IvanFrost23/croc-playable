@@ -389,6 +389,9 @@ function startGame() {
     initGrid();
     initLetters();
     resizeGame();
+
+    startTutorial();
+
     window.addEventListener('resize', resizeGame);
     window.addEventListener('load', resizeGame);
 }

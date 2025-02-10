@@ -1,6 +1,6 @@
 var tutorialActive = false;
 var tutorialFinger = null;
-var tutorialTimeout;
+var tutorialTimeouts = [];
 var tutorialWord = "CUTE";
 
 function getLetterPosition(letter) {
@@ -50,13 +50,17 @@ function animateTutorialSequence(letters, index, positions) {
     if (index >= letters.length) {
         var canvas = document.getElementById('keypad-canvas');
         var ctx = canvas.getContext('2d');
+
         canvas.style.transition = 'opacity 0.5s ease-out';
         canvas.style.opacity = 0;
         if (tutorialFinger) {
             tutorialFinger.style.transition = 'opacity 0.5s ease-out';
             tutorialFinger.style.opacity = 0;
         }
-        tutorialTimeout = setTimeout(function () {
+
+        var t = setTimeout(function () {
+            if (!tutorialActive) return;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             canvas.style.opacity = 1;
             if (tutorialFinger) {
@@ -64,28 +68,37 @@ function animateTutorialSequence(letters, index, positions) {
             }
             runTutorialLoop();
         }, 500);
+        tutorialTimeouts.push(t);
         return;
     }
+
     var letter = letters[index];
     var pos = getLetterPosition(letter);
 
+
     tutorialFinger.style.transition = 'left 0.5s ease, top 0.5s ease';
-
     tutorialFinger.offsetHeight;
-
     tutorialFinger.style.left = pos.x + 'px';
     tutorialFinger.style.top = pos.y + 'px';
 
-    setTimeout(function () {
+    var t1 = setTimeout(function () {
+        if (!tutorialActive) return;
+
         positions.push(pos);
         drawTutorialLine(positions);
 
-        setTimeout(function () {
-            setTimeout(function () {
+        var t2 = setTimeout(function () {
+            if (!tutorialActive) return;
+
+            var t3 = setTimeout(function () {
+                if (!tutorialActive) return;
                 animateTutorialSequence(letters, index + 1, positions);
             }, 150);
+            tutorialTimeouts.push(t3);
         }, 150);
+        tutorialTimeouts.push(t2);
     }, 250);
+    tutorialTimeouts.push(t1);
 }
 
 function runTutorialLoop() {
@@ -114,21 +127,24 @@ function runTutorialLoop() {
 
 function startTutorial() {
     tutorialActive = true;
-
     runTutorialLoop();
 }
 
 function finishTutorial() {
     tutorialActive = false;
-    if (tutorialTimeout) {
-        clearTimeout(tutorialTimeout);
-    }
+
+    tutorialTimeouts.forEach(function(timerId) {
+        clearTimeout(timerId);
+    });
+    tutorialTimeouts = [];
+
     if (tutorialFinger && tutorialFinger.parentNode) {
         tutorialFinger.parentNode.removeChild(tutorialFinger);
         tutorialFinger = null;
     }
-    var gameContainer = document.getElementById('game-container');
     var canvas = document.getElementById('keypad-canvas');
     var ctx = canvas.getContext('2d');
+    canvas.style.transition = 'none';
+    canvas.style.opacity = 1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }

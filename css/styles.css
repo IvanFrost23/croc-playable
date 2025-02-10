@@ -36,7 +36,6 @@ body {
     position: absolute;
     width: 600px;
     height: 931px;
-    overflow: hidden;
     transform-origin: top left;
 }
 

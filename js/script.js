@@ -29,6 +29,7 @@ var canvas = document.getElementById('keypad-canvas');
 var ctx = canvas.getContext('2d');
 var gameContainer = document.getElementById('game-container');
 var moves = 0;
+var musicStarted = false;
 
 canvas.width = 300;
 canvas.height = 300;
@@ -117,6 +118,11 @@ function startDrag(letter) {
     checkMoves();
     if (keypadBlocked) return;
 
+    if (!musicStarted) {
+        document.getElementById('music').play();
+        musicStarted = true;
+    }
+
     finishTutorial();
 
     isDragging = true;
@@ -151,6 +157,8 @@ function updateTypedWordDisplay() {
         }
         typedWordContainer.appendChild(letterBlock);
     });
+
+    document.getElementById('keypad_letter_' + draggedWord.length).play();
 }
 
 function dragOver(letter) {
@@ -293,6 +301,7 @@ function checkWord() {
         crossImage.classList.add('cross');
         typedWordContainer.appendChild(crossImage);
 
+        document.getElementById('wrong_word').play();
         typedWordContainer.classList.add('shake');
         setTimeout(function () {
             typedWordContainer.classList.remove('shake');
@@ -325,6 +334,8 @@ function animateCorrectWord(targetCells) {
         animationElement.style.transition = 'transform 0.5s ease, left 0.5s ease, top 0.5s ease';
         animationElement.style.transitionDelay = (index * 0.1) + 's';
         gameContainer.appendChild(animationElement);
+
+        document.getElementById('correct_word').play();
 
         setTimeout(function () {
             animationElement.style.left = endX + 'px';

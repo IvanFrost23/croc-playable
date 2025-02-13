@@ -40,6 +40,8 @@ function initGrid() {
             var wordContainer = document.createElement('div');
             wordContainer.classList.add('word');
 
+            var coinIndex = Math.floor(Math.random() * (word.length - 1)) + 1;
+
             word.forEach(function (letter, index) {
                 var cellElement = document.createElement('div');
                 cellElement.classList.add('cell');
@@ -51,6 +53,14 @@ function initGrid() {
                     cellElement.innerHTML = "<span>" + letter + "</span>";
                     cellElement.classList.add('green');
                 }
+
+                if (index === coinIndex) {
+                    var coinElement = document.createElement('div');
+                    coinElement.classList.add('flying-target');
+                    cellElement.appendChild(coinElement);
+                    cellElement.coin = coinElement;
+                }
+
                 wordContainer.appendChild(cellElement);
             });
 
@@ -294,7 +304,6 @@ function checkWord() {
             }
 
             animateCorrectWord(gridCells.slice(startIndex, startIndex + typedWord.length));
-            addCoins(10);
         }, 300);
     } else {
         var crossImage = document.createElement('div');
@@ -342,6 +351,11 @@ function animateCorrectWord(targetCells) {
             animationElement.style.top = (endY - (index !== 0 ? 3 : 0)) + 'px';
             letterElement.remove();
         }, 10);
+
+        if (targetCell.coin) {
+            animateCollect(targetCell, document.getElementById('coin-icon'), function () {addCoins(10);}, getScaleFactor(gameContainer));
+            targetCell.coin.style.visibility = 'hidden';
+        }
 
         setTimeout(function () {
             animationElement.remove();

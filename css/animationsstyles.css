@@ -1,0 +1,41 @@
+.flying-target {
+    width: 40px;
+    height: 40px;
+    background: url('images/coin.png') no-repeat center center;
+    background-size: contain;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1000;
+    offset-rotate: 0deg;
+    -webkit-offset-rotate: 0deg;
+}
+
+@-webkit-keyframes flyAnimation {
+    to {
+        -webkit-offset-distance: 100%;
+        offset-distance: 100%;
+    }
+}
+@keyframes flyAnimation {
+    to {
+        -webkit-offset-distance: 100%;
+        offset-distance: 100%;
+    }
+}
+
+.target-hit {
+    animation: targetHitAnimation 0.5s ease;
+    -webkit-animation: targetHitAnimation 0.5s ease;
+}
+
+@-webkit-keyframes targetHitAnimation {
+    0% { transform: translateX(-20px) scale(1); }
+    50% { transform: translateX(-20px) scale(1.3); }
+    100% { transform: translateX(-20px) scale(1); }
+}
+
+@keyframes targetHitAnimation {
+    0% { transform: translateX(-20px) scale(1); }
+    50% { transform: translateX(-20px) scale(1.3); }
+    100% { transform: translateX(-20px) scale(1); }
+}

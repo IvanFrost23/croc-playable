@@ -1,5 +1,4 @@
 function animateCollect(startElement, finishElement, callback, gameScale) {
-    console.log(startElement, finishElement, callback, gameScale);
     var startRect = startElement.getBoundingClientRect();
     var startX = startRect.left + startRect.width / 2;
     var startY = startRect.top + startRect.height / 2;

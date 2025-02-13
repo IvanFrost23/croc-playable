@@ -124,7 +124,9 @@ function initLetters() {
     document.addEventListener('touchend', endDrag);
 }
 
-function startDrag(letter) {
+function startDrag(letter, e) {
+    e.preventDefault();
+
     checkMoves();
     if (keypadBlocked) return;
 

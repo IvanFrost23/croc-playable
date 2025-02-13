@@ -8,6 +8,7 @@
     z-index: 1000;
     offset-rotate: 0deg;
     -webkit-offset-rotate: 0deg;
+    transform: translateX(1px) translateY(1px);
 }
 
 @-webkit-keyframes flyAnimation {

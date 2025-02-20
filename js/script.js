@@ -284,6 +284,8 @@ var guessedWords = new Set();
 function checkWord() {
     var typedWordContainer = document.getElementById('typed-word');
 
+    moves++;
+
     if (guessedWords.has(typedWord)) {
         resetTypedWord();
         return;
@@ -292,7 +294,6 @@ function checkWord() {
     if (correctWords.indexOf(typedWord) !== -1) {
         guessedWords.add(typedWord);
         keypadBlocked = true;
-        moves++;
 
         setTimeout(function () {
             var gridCells = Array.from(document.querySelectorAll('.grid .cell'));

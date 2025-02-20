@@ -284,14 +284,13 @@ var guessedWords = new Set();
 function checkWord() {
     var typedWordContainer = document.getElementById('typed-word');
 
-    moves++;
-
     if (guessedWords.has(typedWord)) {
         resetTypedWord();
         return;
     }
 
     if (correctWords.indexOf(typedWord) !== -1) {
+        moves++;
         guessedWords.add(typedWord);
         keypadBlocked = true;
 
